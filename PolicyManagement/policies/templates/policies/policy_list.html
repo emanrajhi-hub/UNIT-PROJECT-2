@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Policies - Policy Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Policies</h2>
+
+    <!-- 🔹 إضافة مربع البحث وفلتر الفئات -->
+    <form method="GET" action="{% url 'policy_list' %}" class="mb-3">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search policies..." value="{{ request.GET.q }}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select name="category" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    <option value="HR" {% if request.GET.category == "HR" %}selected{% endif %}>Human Resources</option>
+                    <option value="IT" {% if request.GET.category == "IT" %}selected{% endif %}>Information Technology</option>
+                    <option value="Finance" {% if request.GET.category == "Finance" %}selected{% endif %}>Finance</option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    {% if policies %}
+        <div class="table-responsive">
+            <table class="table table-hover mt-4">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for policy in policies %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ policy.title }}</td>
+                            <td>{{ policy.description|truncatewords:10 }}</td>
+                            <td>{{ policy.created_at|date:"Y-m-d" }}</td>
+                            <td>
+                                <a href="{% url 'policy_detail' policy.id %}" class="btn btn-info btn-sm">View</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center mt-4">No policies available.</p>
+    {% endif %}
+</div>
+{% endblock %}

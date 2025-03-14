@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include
 from policies.views import home  # استيراد الصفحة الرئيسية
+from django.conf import settings  # تأكد من استيراده
+from django.conf.urls.static import static  # تأكد من استيراده
 
 
-from django.conf import settings
-from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -28,6 +28,12 @@ urlpatterns = [
     path('', home, name='home'),  # الصفحة الرئيسية
 
     path('accounts/', include('allauth.urls')),
+
+    path('users/', include('users.urls')),
+
+    path('policies/', include('policies.urls')),
+
+
 
 ]
 

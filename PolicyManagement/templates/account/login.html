@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Policy Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Login</h2>
+    <form method="post" class="mt-4 w-50 mx-auto border p-4 rounded">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+    <div class="text-center mt-3">
+        <p>Don't have an account? <a href="{% url 'account_signup' %}">Sign up here</a></p>
+    </div>
+</div>
+{% endblock %}

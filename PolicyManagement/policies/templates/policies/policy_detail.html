@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ policy.title }} - Policy Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">{{ policy.title }}</h2>
+    <p class="text-muted text-center">Category: {{ policy.get_category_display }}</p>
+
+    <div class="card mx-auto mt-4 shadow-lg" style="width: 60%;">
+        <div class="card-body">
+            <p class="card-text"><strong>Description:</strong></p>
+            <p>{{ policy.description }}</p>
+
+            {% if policy.file %}
+            
+            <hr>
+            <p><strong>Attached File:</strong></p>
+        
+            <object data="{{ policy.file.url }}" type="application/pdf" width="100%" height="500px">
+                <p>Your browser does not support viewing PDFs. 
+                 
+                </p>
+            </object>
+        
+            <div class="mt-3">
+                <a href="{{ policy.file.url }}" target="_blank" class="btn btn-info">View in New Tab</a>
+                <a href="{{ policy.file.url }}" download class="btn btn-primary">Download File</a>
+            </div>
+        {% endif %}
+        
+
+        <hr>
+        <p class="text-muted">Created at: {{ policy.created_at|date:"Y-m-d H:i" }}</p>
+        <a href="{% url 'policy_list' %}" class="btn btn-secondary">Back to Policies</a>
+    </div>
+</div>
+</div>
+{% endblock %}
