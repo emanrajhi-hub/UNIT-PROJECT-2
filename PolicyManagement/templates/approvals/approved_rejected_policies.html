@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Approved & Rejected Policies - Policy Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Approved & Rejected Policies</h2>
+
+    <h3 class="mt-4 text-success">Approved Policies</h3>
+    {% if approved_policies %}
+        <div class="table-responsive">
+            <table class="table table-hover mt-3">
+                <thead class="table-success">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for policy in approved_policies %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ policy.title }}</td>
+                            <td>{{ policy.description|truncatewords:10 }}</td>
+                            <td>{{ policy.get_category_display }}</td>
+                            <td>{{ policy.created_at|date:"Y-m-d" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center text-muted">No approved policies available.</p>
+    {% endif %}
+
+    <h3 class="mt-4 text-danger">Rejected Policies</h3>
+    {% if rejected_policies %}
+        <div class="table-responsive">
+            <table class="table table-hover mt-3">
+                <thead class="table-danger">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for policy in rejected_policies %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ policy.title }}</td>
+                            <td>{{ policy.description|truncatewords:10 }}</td>
+                            <td>{{ policy.get_category_display }}</td>
+                            <td>{{ policy.created_at|date:"Y-m-d" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center text-muted">No rejected policies available.</p>
+    {% endif %}
+</div>
+{% endblock %}

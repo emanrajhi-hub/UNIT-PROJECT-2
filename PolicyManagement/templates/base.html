@@ -9,18 +9,32 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Policy Management</a>
+            <a class="navbar-brand" href="{% url 'home' %}">Policy Management</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Policies</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Approvals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Notifications</a></li>
-
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'policy_list' %}">Policies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'approvals_list' %}">Approvals</a></li>
+                    
                     {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{% url 'notifications_list' %}">
+                            Notifications
+                            {% if user.is_authenticated %}
+                                {% with unread_notifications=user.notification_set.all|dictsort:"is_read"|slice:":1" %}
+                                    {% if unread_notifications and not unread_notifications.0.is_read %}
+                                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                                            !
+                                        </span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        </a>
+                    </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                         </li>
@@ -37,12 +51,25 @@
         </div>
     </nav>
 
+    <!-- ✅ ✅ إضافة الرسائل هنا ✅ ✅ -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <!-- ✅ ✅ نهاية إضافة الرسائل ✅ ✅ -->
+
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
 
     <footer class="bg-dark text-light text-center py-3 mt-5">
-        &copy; 2025 Policy Management System
+        &copy; 2025 Policy Management System & Design and Develop by : EMAN RAJHI
     </footer>
 </body>
 </html>

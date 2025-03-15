@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Approvals - Policy Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Pending Approvals</h2>
+
+    <!-- ✅ زر الانتقال إلى السياسات الموافق عليها والمرفوضة -->
+    <div class="text-end mb-3">
+        <a href="{% url 'approved_rejected_policies' %}" class="btn btn-secondary">View Approved & Rejected</a>
+    </div>
+
+    {% if policies %}
+        <div class="table-responsive">
+            <table class="table table-hover mt-4">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for policy in policies %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ policy.title }}</td>
+                            <td>{{ policy.description|truncatewords:10 }}</td>
+                            <td>{{ policy.get_category_display }}</td>
+                            <td>{{ policy.created_at|date:"Y-m-d" }}</td>
+                            <td>
+                                <a href="{% url 'approve_policy' policy.id %}" class="btn btn-success btn-sm">Approve</a>
+                                <a href="{% url 'reject_policy' policy.id %}" class="btn btn-danger btn-sm">Reject</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center mt-4">No pending policies for approval.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -33,6 +33,12 @@ urlpatterns = [
 
     path('policies/', include('policies.urls')),
 
+    path('approvals/', include('approvals.urls')),  # ✅ إضافة مسار approvals
+
+    path('notifications/', include('notifications.urls')),  # ✅ إضافة مسار notifications
+
+
+
 
 
 ]
