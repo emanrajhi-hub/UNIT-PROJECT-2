@@ -24,10 +24,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1rv!(-_14zr9!!mn5+_cvtg4%xmdqglo7ngnjoe3b6$)fg0*-)'
+#SECRET_KEY = 'django-insecure-1rv!(-_14zr9!!mn5+_cvtg4%xmdqglo7ngnjoe3b6$)fg0*-)'
+
+#///
+SECRET_KEY = os.getenv('SECRET_KEY', 'your_default_secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+
+#///
+DEBUG = os.getenv('DEBUG', 'True') == 'True'  # ✅ تأكد من تحويل النص إلى `Boolean`
+
 
 ALLOWED_HOSTS = []
 
@@ -81,6 +88,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'notifications.views.get_unread_notifications_count',  # ✅ إضافة هذا السطر
+
             ],
         },
     },

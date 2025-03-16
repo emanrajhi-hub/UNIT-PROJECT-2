@@ -1,17 +1,41 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Home - Policy Management{% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <h1 class="display-4">Welcome to Policy Management System</h1>
-    <p class="lead">Manage policies, approvals, and notifications efficiently.</p>
-    
-    {% if user.is_authenticated %}
-        <a href="{% url 'profile' %}" class="btn btn-primary btn-lg mt-3">Go to Profile</a>
-    {% else %}
-        <a href="{% url 'account_login' %}" class="btn btn-primary btn-lg mt-3">Login</a>
-        <a href="{% url 'account_signup' %}" class="btn btn-success btn-lg mt-3 ms-2">Sign Up</a>
-    {% endif %}
+
+<!-- ✅ قسم العنوان بخلفية -->
+<div class="hero-section text-white text-center py-5" style="background: url('{% static "images/banner.jpg" %}') no-repeat center center; background-size: cover;">
+    <h1>Welcome to Policy Management System</h1>
+    <p>Easily manage, review, and approve internal policies for your organization.</p>
 </div>
+
+<!-- ✅ المقدمة -->
+<div class="container text-center my-5">
+    <h2 class="mb-3">Latest Policies</h2>
+    <p class="text-muted">Here you can find the latest policies submitted by users for review. Browse, view details, and stay informed!</p>
+</div>
+
+<!-- ✅ البطاقات -->
+<div class="container">
+    <div class="row">
+        {% for policy in policies %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0 policy-card">
+                    <!-- صورة افتراضية -->
+                    <img src="{% static 'images/policy-placeholder.jpg' %}" class="card-img-top" alt="Policy Image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ policy.title }}</h5>
+                        <p class="card-text"><strong>Category:</strong> {{ policy.get_category_display }}</p>
+                        <a href="{% url 'policy_detail' policy.id %}" class="btn btn-primary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No policies available yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
 {% endblock %}

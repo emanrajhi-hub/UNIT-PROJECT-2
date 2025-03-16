@@ -16,6 +16,8 @@ class Policy(models.Model):
         ('HR', 'Human Resources'),
         ('IT', 'Information Technology'),
         ('Finance', 'Finance'),
+        ('Engineernig' , 'Engineering'),
+        ('Private', 'Private Sectors'),  # ✅ إضافة فئة القطاعات الخاصة
     ]
 
     title = models.CharField(max_length=255)

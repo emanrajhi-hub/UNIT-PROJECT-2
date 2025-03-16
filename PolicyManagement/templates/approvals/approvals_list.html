@@ -21,6 +21,7 @@
                         <th>Description</th>
                         <th>Category</th>
                         <th>Created At</th>
+                        <th>Added By</th>  <!-- ✅ إضافة من قام بإضافة السياسة -->
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -32,9 +33,16 @@
                             <td>{{ policy.description|truncatewords:10 }}</td>
                             <td>{{ policy.get_category_display }}</td>
                             <td>{{ policy.created_at|date:"Y-m-d" }}</td>
+                            <td>{{ policy.author.username }}</td>  <!-- ✅ عرض اسم الشخص الذي أضاف السياسة -->
                             <td>
-                                <a href="{% url 'approve_policy' policy.id %}" class="btn btn-success btn-sm">Approve</a>
-                                <a href="{% url 'reject_policy' policy.id %}" class="btn btn-danger btn-sm">Reject</a>
+                                <!-- ✅ إظهار تفاصيل السياسة للجميع -->
+                                <a href="{% url 'policy_detail' policy.id %}" class="btn btn-info btn-sm">View</a>
+
+                                {% if user.is_superuser %}  
+                                    <!-- ✅ إظهار أزرار القبول والرفض فقط للمشرف -->
+                                    <a href="{% url 'approve_policy' policy.id %}" class="btn btn-success btn-sm">Approve</a>
+                                    <a href="{% url 'reject_policy' policy.id %}" class="btn btn-danger btn-sm">Reject</a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

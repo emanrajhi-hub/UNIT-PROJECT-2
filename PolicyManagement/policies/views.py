@@ -4,10 +4,14 @@ from django.http import HttpResponseForbidden
 from .models import Policy
 from .forms import PolicyForm  # تأكد من أنك أضفت نموذج تعديل السياسة
 from django.contrib import messages
+from notifications.models import Notification
 
 
 def home(request):
-    return render(request, 'home.html')
+    policies = Policy.objects.all().order_by('-created_at')[:6]  # عرض أحدث 6 سياسات فقط كمثال
+    return render(request, 'home.html', {'policies': policies})
+
+
 
 
 def policy_list(request):
@@ -53,7 +57,6 @@ def edit_policy(request, policy_id):
     return render(request, 'policies/edit_policy.html', {'form': form, 'policy': policy})
 
 
-
 @login_required
 def add_policy(request):
     if request.method == 'POST':
@@ -62,10 +65,38 @@ def add_policy(request):
             policy = form.save(commit=False)
             policy.author = request.user  # تعيين المستخدم الحالي كصاحب السياسة
             policy.save()
-            messages.success(request, "Policy added successfully.")
 
+            # ✅ إضافة إشعار عند إضافة سياسة جديدة
+            from notifications.models import Notification  # استيراد الموديل داخل الفيو
+            Notification.objects.create(
+                recipient=policy.author,  # إرسال الإشعار للمستخدم الذي أضاف السياسة
+                message=f"Your policy '{policy.title}' has been submitted for approval."
+            )
+
+            messages.success(request, "✅ Policy added successfully and sent for approval.")
             return redirect('policy_list')
     else:
         form = PolicyForm()
 
     return render(request, 'policies/add_policy.html', {'form': form})
+
+
+
+@login_required
+def delete_policy(request, policy_id):
+    policy = get_object_or_404(Policy, id=policy_id)
+
+    if not request.user.is_superuser:
+        messages.error(request, "❌ You do not have permission to delete this policy.")
+        return redirect('policy_list')
+
+    # إرسال إشعار إلى صاحب السياسة قبل الحذف
+    Notification.objects.create(
+        recipient=policy.author,
+        message=f"Your policy '{policy.title}' has been deleted by an admin."
+    )
+
+    policy.delete()
+    messages.success(request, "✅ Policy deleted successfully.")
+    
+    return redirect('policy_list')

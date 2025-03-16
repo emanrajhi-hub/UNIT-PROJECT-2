@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import policy_list ,  policy_detail, add_policy ,  edit_policy
+from .views import policy_list ,  policy_detail, add_policy ,  edit_policy , delete_policy
 
 urlpatterns = [
     path('', policy_list, name='policy_list'),
@@ -10,6 +10,9 @@ urlpatterns = [
 
 
     path('edit/<int:policy_id>/', edit_policy, name='edit_policy'),
+
+    path('delete/<int:policy_id>/', delete_policy, name='delete_policy'),
+
 
 
 ]

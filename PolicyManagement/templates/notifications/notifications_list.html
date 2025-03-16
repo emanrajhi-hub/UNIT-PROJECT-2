@@ -1,27 +1,35 @@
 {% extends "base.html" %}
 
-{% block title %}Notifications{% endblock %}
+{% block title %}Notifications ({{ unread_count }}){% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center">Notifications</h2>
+    <h2 class="text-center">Notifications ({{ unread_count }})</h2>
 
     {% if notifications %}
+        <!-- ✅ زر تحديد كل الإشعارات كمقروءة -->
+        {% if unread_count > 0 %}
+            <div class="text-end mb-3">
+                <a href="{% url 'mark_all_as_read' %}" class="btn btn-primary">📩 Mark All as Read</a>
+            </div>
+        {% endif %}
+
         <ul class="list-group mt-4">
             {% for notification in notifications %}
-                <li class="list-group-item d-flex justify-content-between align-items-center {% if not notification.is_read %}list-group-item-warning{% endif %}">
+                <li class="list-group-item d-flex justify-content-between align-items-center 
+                           {% if not notification.is_read %}list-group-item-warning{% endif %}">
                     <span>
                         {{ notification.message }} 
                         <small class="text-muted d-block">{{ notification.created_at|date:"Y-m-d H:i" }}</small>
                     </span>
                     {% if not notification.is_read %}
-                        <a href="{% url 'mark_as_read' notification.id %}" class="btn btn-sm btn-success">Mark as Read</a>
+                        <a href="{% url 'mark_as_read' notification.id %}" class="btn btn-sm btn-success">✔ Mark as Read</a>
                     {% endif %}
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p class="text-center mt-4">No notifications available.</p>
+        <p class="text-center mt-4 alert alert-info">No notifications available.</p>
     {% endif %}
 </div>
 {% endblock %}

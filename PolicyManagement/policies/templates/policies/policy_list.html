@@ -28,6 +28,10 @@
                     <option value="HR" {% if request.GET.category == "HR" %}selected{% endif %}>Human Resources</option>
                     <option value="IT" {% if request.GET.category == "IT" %}selected{% endif %}>Information Technology</option>
                     <option value="Finance" {% if request.GET.category == "Finance" %}selected{% endif %}>Finance</option>
+                    <option value="Engineering" {% if request.GET.category == "Engineering" %}selected{% endif %}>Engineering</option>
+                    <option value="Private" {% if request.GET.category == "Private" %}selected{% endif %}>Private Sectors</option> <!-- ✅ إضافة الفئة الجديدة -->
+
+
                 </select>
             </div>
         </div>
@@ -55,10 +59,23 @@
                             <td>
                                 <a href="{% url 'policy_detail' policy.id %}" class="btn btn-info btn-sm">View</a>
 
-                                <!-- ✅ زر التعديل يظهر فقط لصاحب السياسة -->
-                                {% if policy.author == request.user %}
-                                    <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Edit</a>
-                                {% endif %}
+                             
+                               <!-- ✅ زر التعديل يظهر فقط لصاحب السياسة أو للمشرف -->
+                               {% if policy.author == request.user or request.user.is_superuser %}
+                               <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Edit</a>
+                               {% endif %}
+
+                               
+                               <!-- ✅ زر الحذف يظهر فقط للمشرف -->
+                               {% if request.user.is_superuser %}
+                              <form action="{% url 'delete_policy' policy.id %}" method="post" class="d-inline">
+                               {% csrf_token %}
+                              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this policy?');">
+                                      Delete
+                              </button>
+                              </form>
+                              {% endif %}
+
                             </td>
                         </tr>
                     {% endfor %}
