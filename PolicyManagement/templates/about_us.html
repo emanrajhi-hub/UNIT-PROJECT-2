@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}About Us - Policy Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">About Us</h2>
+    <div class="card shadow-sm p-4 mx-auto" style="max-width: 700px;">
+        <p>
+            Welcome to <strong>Policy Management System</strong>, a platform designed to help organizations manage, review, and approve internal policies efficiently.
+        </p>
+        <p>
+            Our mission is to streamline the process of policy creation and approval, making it faster and more transparent for all stakeholders.
+        </p>
+        <p>
+            We are committed to providing a user-friendly and secure experience for all users, whether you are an administrator or a policy contributor.
+        </p>
+
+        <hr>
+        <h5>Want to get in touch?</h5>
+        <p>
+            Please feel free to <a href="{% url 'contact_us' %}">contact us here</a> if you have any questions or suggestions!
+        </p>
+    </div>
+</div>
+{% endblock %}

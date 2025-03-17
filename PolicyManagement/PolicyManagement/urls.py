@@ -19,6 +19,8 @@ from django.urls import path , include
 from policies.views import home  # استيراد الصفحة الرئيسية
 from django.conf import settings  # تأكد من استيراده
 from django.conf.urls.static import static  # تأكد من استيراده
+from policies.views import home, about_us, contact_us
+
 
 
 
@@ -26,6 +28,12 @@ from django.conf.urls.static import static  # تأكد من استيراده
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),  # الصفحة الرئيسية
+
+    path('about/', about_us, name='about_us'),  # ✅ رابط About Us هنا
+
+    path('contact/', contact_us, name='contact_us'),  # ✅ رابط Contact Us هنا
+
+
 
     path('accounts/', include('allauth.urls')),
 
@@ -36,9 +44,6 @@ urlpatterns = [
     path('approvals/', include('approvals.urls')),  # ✅ إضافة مسار approvals
 
     path('notifications/', include('notifications.urls')),  # ✅ إضافة مسار notifications
-
-
-
 
 
 ]

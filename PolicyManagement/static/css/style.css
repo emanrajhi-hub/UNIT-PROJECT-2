@@ -1,13 +1,17 @@
-/* خلفية الهيدر */
+/* ✅ hero section - خلفية الصورة والعنوان والنص */
 .hero-section {
-    background: url("{% static 'images/banner.jpg' %}") center center/cover no-repeat;
+    background: url('/static/images/banner.jpg') center center/cover no-repeat;
     color: #fff;
-    padding: 100px 0;
+    padding: 100px 120px;
     text-align: center;
     border-radius: 8px;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-/* العنوان والترحيب */
 .hero-section h1 {
     font-size: 3rem;
     font-weight: bold;
@@ -18,41 +22,119 @@
     margin-top: 10px;
 }
 
-/* بطاقات السياسات */
-.policy-card {
-    transition: transform 0.3s, box-shadow 0.3s;
+/* ✅ محرك البحث داخل الهيرو */
+.hero-section form input.form-control {
+    border-radius: 25px 0 0 25px;
     border: none;
+    padding: 10px 15px;
 }
 
-.policy-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+.hero-section form button.btn-light {
+    border-radius: 0 25px 25px 0;
+    border: none;
+    padding: 10px 20px;
 }
 
-.policy-card img {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    height: 200px;
-    object-fit: cover;
+.hero-section form input:focus {
+    box-shadow: none;
 }
 
-/* الأزرار */
-.btn-primary {
+/* ✅ تحسين محرك البحث للهواتف */
+@media (max-width: 576px) {
+    .hero-section form.d-flex {
+        flex-direction: column;
+    }
+    .hero-section form input.form-control {
+        border-radius: 25px;
+        margin-bottom: 10px;
+    }
+    .hero-section form button.btn-light {
+        border-radius: 25px;
+    }
+}
+
+/* ✅ تحسين حجم الجدول في الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+    .table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    .table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+    .table td:last-child {
+        border-bottom: none;
+    }
+    .table td::before {
+        font-weight: bold;
+        color: #0d6efd;
+    }
+    .table td:nth-child(1)::before { content: "#"; }
+    .table td:nth-child(2)::before { content: "Title"; }
+    .table td:nth-child(3)::before { content: "Description"; }
+    .table td:nth-child(4)::before { content: "Created"; }
+    .table td:nth-child(5)::before { content: "Actions"; }
+}
+
+/* ✅ تحسين الأزرار */
+.btn {
+    transition: all 0.3s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn i {
+    font-size: 1rem;
+}
+
+/* ✅ تحسين الـ pagination */
+.pagination .page-item .page-link {
+    border-radius: 20px !important;
+    margin: 0 3px;
+    transition: all 0.2s;
+}
+
+.pagination .page-item .page-link:hover {
     background-color: #0d6efd;
-    border: none;
+    color: #fff;
 }
 
-.btn-primary:hover {
-    background-color: #084298;
+/* ✅ تحسين صفحة التفاصيل */
+.card.policy-detail-card {
+    border-radius: 10px;
 }
 
-/* تنسيق النص */
-.policy-card .card-title {
-    font-size: 1.2rem;
+.card.policy-detail-card .btn {
+    margin-right: 5px;
+}
+
+.policy-detail-icons i {
+    margin-right: 5px;
+}
+
+.policy-detail-file object {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-height: 400px;
+    width: 100%;
+}
+
+/* ✅ رسالة لا توجد نتائج */
+.no-policies {
+    background: #fff3cd;
+    color: #664d03;
+    border-radius: 10px;
+    padding: 20px;
     font-weight: bold;
-}
-
-.policy-card .card-text {
-    font-size: 0.95rem;
-    color: #555;
+    text-align: center;
 }
