@@ -6,11 +6,34 @@
 <div class="container mt-5">
     <h2 class="text-center">Add New Policy</h2>
 
-    <form method="POST" enctype="multipart/form-data" class="mt-4">  <!-- ✅ إضافة enctype هنا -->
+    <form method="POST" enctype="multipart/form-data" class="mt-4">  <!-- ✅ يجب إضافة enctype -->
         {% csrf_token %}
 
+        <!-- ✅ الحقول الخاصة بالنموذج -->
         <div class="mb-3">
-            {{ form.as_p }}
+            {{ form.title.label_tag }}
+            {{ form.title }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.category.label_tag }}
+            {{ form.category }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.file.label_tag }}
+            {{ form.file }}
+        </div>
+
+        <!-- ✅ الحقل الجديد الخاص بالصورة -->
+        <div class="mb-3">
+            {{ form.image.label_tag }}
+            {{ form.image }}
         </div>
 
         <button type="submit" class="btn btn-success">Submit</button>

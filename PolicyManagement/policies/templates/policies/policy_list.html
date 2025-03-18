@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %}Policies - Policy Management{% endblock %}
 
 {% block content %}
@@ -49,6 +51,7 @@
                 <thead class="table-dark">
                     <tr>
                         <th>#</th>
+                        <th>Image</th>
                         <th>Title</th>
                         <th>Description</th>
                         <th>Created At</th>
@@ -59,6 +62,14 @@
                     {% for policy in policies %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
+                            <!-- ✅ صورة السياسة من MEDIA -->
+                            <td>
+                                {% if policy.image %}
+                                    <img src="{{ policy.image.url }}" alt="Policy Image" width="80" class="rounded shadow-sm">
+                                {% else %}
+                                    <img src="{% static 'images/default-policy.jpg' %}" alt="Default Image" width="80" class="rounded shadow-sm">
+                                {% endif %}
+                            </td>
                             <td>{{ policy.title }}</td>
                             <td>{{ policy.description|truncatewords:10 }}</td>
                             <td>{{ policy.created_at|date:"Y-m-d" }}</td>

@@ -177,11 +177,15 @@ ACCOUNT_LOGIN_METHODS = {'username'}
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
+# ربط نموذج التسجيل المخصص بـ Allauth
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomSignupForm'
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'emyksa1429@gmail.com'  # بريدك هنا
-EMAIL_HOST_PASSWORD = 'vnqq owdf pjka weor'  # كلمة مرور التطبيق (App Password)
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ policy.title }} - Policy Details{% endblock %}
 
@@ -9,7 +10,18 @@
         <i class="bi bi-folder2-open"></i> Category: {{ policy.get_category_display }}
     </p>
 
-    <div class="card mx-auto shadow-lg" style="max-width: 700px;">
+    <div class="card mx-auto shadow-lg" style="max-width: 600px;">
+        <!-- ✅ صورة السياسة -->
+        {% if policy.image %}
+            <div class="text-center mt-3">
+                <img src="{{ policy.image.url }}" class="rounded img-fluid" style="max-height: 180px; object-fit: contain;" alt="Policy Image">
+            </div>
+        {% else %}
+            <div class="text-center mt-3">
+                <img src="{% static 'images/default-policy.jpg' %}" class="rounded img-fluid" style="max-height: 180px; object-fit: contain;" alt="Default Image">
+            </div>
+        {% endif %}
+
         <div class="card-body">
             <p class="card-text"><strong><i class="bi bi-info-circle"></i> Description:</strong></p>
             <p>{{ policy.description }}</p>

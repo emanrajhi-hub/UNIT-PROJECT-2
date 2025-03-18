@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile - Policy Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>👤 User Profile</h4>
+                </div>
+                <div class="card-body text-center">
+
+                    <!-- ✅ صورة رمزية بناءً على الجنس -->
+                    {% if user.gender == "male" %}
+                        <img src="{% static 'images/male.png' %}" alt="Male Avatar" class="rounded-circle mb-3" width="100">
+                    {% elif user.gender == "female" %}
+                        <img src="{% static 'images/female.png' %}" alt="Female Avatar" class="rounded-circle mb-3" width="100">
+                    {% else %}
+                        <img src="{% static 'images/default.png' %}" alt="Default Avatar" class="rounded-circle mb-3" width="100">
+                    {% endif %}
+
+                    <!-- بيانات المستخدم -->
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <p class="card-text text-muted">{{ user.email }}</p>
+
+                    <!-- روابط وأزرار -->
+                    <div class="d-grid gap-2 col-8 mx-auto">
+                        <a href="{% url 'edit_profile' %}" class="btn btn-outline-info btn-sm">✏️ Edit Profile</a>
+                        <a href="{% url 'change_password' %}" class="btn btn-outline-warning btn-sm">🔒 Change Password</a>
+                        <form method="POST" action="{% url 'send_test_email' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">📧 Send Test Email</button>
+                        </form>
+                        <a href="{% url 'account_logout' %}" class="btn btn-outline-danger btn-sm">🚪 Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
