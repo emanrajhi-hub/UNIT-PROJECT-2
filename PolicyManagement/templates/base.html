@@ -1,44 +1,48 @@
 {% load static %}
+{% now "U" as timestamp %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Policy Management{% endblock %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ timestamp }}">
+    
+    <!-- ✅ منع التخزين المؤقت -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 </head>
 
 <body>
 
-    <!-- ✅ رسالة الترحيب مع زر تعديل الملف الشخصي -->
     {% if user.is_authenticated %}
         <div class="bg-primary text-white text-center py-2 d-flex justify-content-center align-items-center gap-3">
             <span>👋 Welcome, {{ user.username }}!</span>
-            <a href="{% url 'profile' %}" class="btn btn-light btn-sm">Edit Profile</a>
+            <a href="{% url 'profile' %}?v={{ timestamp }}" class="btn btn-light btn-sm">Edit Profile</a>
         </div>
     {% endif %}
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Policy Management</a>
+            <a class="navbar-brand" href="{% url 'home' %}?v={{ timestamp }}">Policy Management</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'policy_list' %}">Policies</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'approvals_list' %}">Approvals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'about_us' %}">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'contact_us' %}">Contact Us</a></li>
+                <ul class="navbar-nav ms-auto align-items-center">
+
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}?v={{ timestamp }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'policy_list' %}?v={{ timestamp }}">Policies</a></li>
                     
                     {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'approvals_list' %}?v={{ timestamp }}">Approvals</a></li>
                         <li class="nav-item">
-                            <a class="nav-link position-relative" href="{% url 'notifications_list' %}">
-                                <i class="bi bi-bell me-1"></i> Notifications
+                            <a class="nav-link position-relative" href="{% url 'notifications_list' %}?v={{ timestamp }}"><i class="bi bi-bell me-1"></i> Notifications
                                 {% if unread_count > 0 %}
                                     <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
                                         {{ unread_count }}
@@ -46,29 +50,40 @@
                                 {% endif %}
                             </a>
                         </li>
+                    {% endif %}
+
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about_us' %}?v={{ timestamp }}">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact_us' %}?v={{ timestamp }}">Contact Us</a></li>
+
+                    {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_logout' %}">
+                            <a class="nav-link" href="{% url 'account_logout' %}?v={{ timestamp }}">
                                 <i class="bi bi-box-arrow-right me-1"></i> Logout
                             </a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_login' %}">
+                            <a class="nav-link" href="{% url 'account_login' %}?v={{ timestamp }}">
                                 <i class="bi bi-box-arrow-in-right me-1"></i> Login
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_signup' %}">
-                                <i class="bi bi-person-plus me-1"></i> Sign Up
-                            </a>
+                            <a class="nav-link" href="{% url 'account_signup' %}?v={{ timestamp }}"><i class="bi bi-person-plus me-1"></i> Sign Up</a>
                         </li>
                     {% endif %}
+
+                    <!-- زر الوضع الليلي/النهاري -->
+                    <li class="nav-item ms-3">
+                        <button id="toggle-theme" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-moon"></i>
+                        </button>
+                    </li>
+
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- ✅ الرسائل -->
     {% if messages %}
     <div class="container mt-3">
         {% for message in messages %}
@@ -98,5 +113,25 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ✅ سكربت الوضع الليلي/النهاري مع حفظ التفضيل -->
+    <script>
+        const toggleBtn = document.getElementById('toggle-theme');
+        const htmlEl = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            htmlEl.setAttribute('data-bs-theme', savedTheme);
+            toggleBtn.innerHTML = savedTheme === 'dark' ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon"></i>';
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlEl.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlEl.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            toggleBtn.innerHTML = newTheme === 'dark' ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon"></i>';
+        });
+    </script>
 </body>
 </html>

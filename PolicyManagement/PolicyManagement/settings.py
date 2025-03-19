@@ -177,6 +177,12 @@ ACCOUNT_LOGIN_METHODS = {'username'}
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+
 # ربط نموذج التسجيل المخصص بـ Allauth
 ACCOUNT_FORMS = {
     'signup': 'users.forms.CustomSignupForm'
@@ -189,3 +195,10 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+#/////////////
+# ملفات الجلسة Session
+#SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 1800  # تنتهي الجلسة بعد ساعة (يمكنك تعديلها حسب الحاجة)
+SESSION_SAVE_EVERY_REQUEST = True

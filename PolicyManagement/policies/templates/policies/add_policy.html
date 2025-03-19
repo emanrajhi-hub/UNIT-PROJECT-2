@@ -4,39 +4,48 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center">Add New Policy</h2>
 
-    <form method="POST" enctype="multipart/form-data" class="mt-4">  <!-- ✅ يجب إضافة enctype -->
-        {% csrf_token %}
+    {% if user.is_authenticated %}
+        <h2 class="text-center">Add New Policy</h2>
 
-        <!-- ✅ الحقول الخاصة بالنموذج -->
-        <div class="mb-3">
-            {{ form.title.label_tag }}
-            {{ form.title }}
+        <form method="POST" enctype="multipart/form-data" class="mt-4">  <!-- ✅ يجب إضافة enctype -->
+            {% csrf_token %}
+
+            <!-- ✅ الحقول الخاصة بالنموذج -->
+            <div class="mb-3">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.file.label_tag }}
+                {{ form.file }}
+            </div>
+
+            <!-- ✅ الحقل الجديد الخاص بالصورة -->
+            <div class="mb-3">
+                {{ form.image.label_tag }}
+                {{ form.image }}
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    {% else %}
+        <!-- ✅ تنبيه للزائر -->
+        <div class="alert alert-warning text-center" role="alert">
+            <i class="bi bi-lock-fill"></i> You need to <a href="{% url 'account_login' %}" class="alert-link">Login</a> or <a href="{% url 'account_signup' %}" class="alert-link">Sign Up</a> to add a new policy.
         </div>
+    {% endif %}
 
-        <div class="mb-3">
-            {{ form.description.label_tag }}
-            {{ form.description }}
-        </div>
-
-        <div class="mb-3">
-            {{ form.category.label_tag }}
-            {{ form.category }}
-        </div>
-
-        <div class="mb-3">
-            {{ form.file.label_tag }}
-            {{ form.file }}
-        </div>
-
-        <!-- ✅ الحقل الجديد الخاص بالصورة -->
-        <div class="mb-3">
-            {{ form.image.label_tag }}
-            {{ form.image }}
-        </div>
-
-        <button type="submit" class="btn btn-success">Submit</button>
-    </form>
 </div>
 {% endblock %}

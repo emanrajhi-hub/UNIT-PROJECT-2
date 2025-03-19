@@ -1,18 +1,16 @@
 from django.urls import path
-from .views import policy_list ,  policy_detail, add_policy ,  edit_policy , delete_policy
+from . import views
 
 urlpatterns = [
-    path('', policy_list, name='policy_list'),
+    path('', views.policy_list, name='policy_list'),
+    path('<int:policy_id>/', views.policy_detail, name='policy_detail'),
+    path('add/', views.add_policy, name='add_policy'),
+    path('edit/<int:policy_id>/', views.edit_policy, name='edit_policy'),
+    path('delete/<int:policy_id>/', views.delete_policy, name='delete_policy'),
 
-    path('<int:policy_id>/', policy_detail, name='policy_detail'),  # عرض تفاصيل السياسة
+    # ✅ مسار toggle للـ bookmark (إضافة / إزالة)
+    path('bookmark/toggle/<int:policy_id>/', views.toggle_bookmark, name='toggle_bookmark'),
 
-    path('add/', add_policy, name='add_policy'),  # ✅ إضافة مسار إضافة السياسة
-
-
-    path('edit/<int:policy_id>/', edit_policy, name='edit_policy'),
-
-    path('delete/<int:policy_id>/', delete_policy, name='delete_policy'),
-
-
-
+    # ✅ صفحة عرض جميع bookmarks داخل صفحة البروفايل
+    path('bookmarks/', views.profile_bookmarks, name='profile_bookmarks'),
 ]

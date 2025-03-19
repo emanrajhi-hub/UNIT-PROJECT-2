@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+
 
 # Create your models here.
 
@@ -34,3 +36,16 @@ class Policy(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
+    policy = models.ForeignKey('Policy', on_delete=models.CASCADE, related_name='bookmarked_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'policy')  # كل سياسة تُحفظ مرة واحدة لكل مستخدم
+
+    def __str__(self):
+        return f"{self.user.username} bookmarked {self.policy.title}"

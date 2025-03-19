@@ -5,16 +5,40 @@
 
 {% block content %}
 <div class="container mt-5 text-center">
-    <div class="card shadow mx-auto" style="max-width: 500px;">
-        <div class="card-body">
-            <h2 class="card-title mb-3">👋 Logged Out Successfully</h2>
-            <p class="text-muted">You have been logged out of your account.</p>
 
-            <div class="mt-4 d-grid gap-2 col-6 mx-auto">
-                <a href="{% url 'account_login' %}" class="btn btn-primary">🔐 Login Again</a>
-                <a href="{% url 'home' %}" class="btn btn-secondary">🏠 Return to Home</a>
+    <!-- ✅ رسالة تأكيد تسجيل الخروج -->
+    <div class="alert alert-success d-flex align-items-center justify-content-center gap-2" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>You have been successfully logged out.</span>
+    </div>
+
+    <!-- ✅ البطاقة -->
+    <div class="card shadow-lg mx-auto mt-4" style="max-width: 500px;">
+        <div class="card-body">
+            <h2 class="card-title mb-3">👋 Goodbye!</h2>
+            <p class="text-muted">We hope to see you again soon.</p>
+
+            <!-- ✅ أزرار -->
+            <div class="mt-4 d-grid gap-3 col-10 mx-auto">
+                <a href="{% url 'account_login' %}" class="btn btn-primary btn-sm">
+                    🔐 Login Again
+                </a>
+                <a href="{% url 'account_signup' %}" class="btn btn-outline-info btn-sm">
+                    📝 Create New Account
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-secondary btn-sm">
+                    🏠 Return to Home
+                </a>
             </div>
         </div>
     </div>
+
+    <!-- ✅ إعادة توجيه تلقائي للصفحة الرئيسية بعد 5 ثواني -->
+    <script>
+        setTimeout(function() {
+            window.location.href = "{% url 'home' %}";
+        }, 5000);
+    </script>
+
 </div>
 {% endblock %}
