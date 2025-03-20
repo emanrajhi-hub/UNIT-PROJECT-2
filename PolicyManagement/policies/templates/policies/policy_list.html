@@ -50,7 +50,7 @@
                     <tr>
                         <th>#</th>
                         <th>Image</th>
-                        <th>Title</th>
+                        <th>Title & Author</th>
                         <th>Description</th>
                         <th>Created At</th>
                         <th>Actions</th>
@@ -67,7 +67,10 @@
                                     <img src="{% static 'images/default-policy.jpg' %}" alt="Default Image" width="80" class="rounded shadow-sm">
                                 {% endif %}
                             </td>
-                            <td>{{ policy.title }}</td>
+                            <td>
+                                <strong>{{ policy.title }}</strong><br>
+                                <small class="text-muted">by {{ policy.author.username }}</small>
+                            </td>
                             <td>{{ policy.description|truncatewords:10 }}</td>
                             <td>{{ policy.created_at|date:"Y-m-d" }}</td>
                             <td>

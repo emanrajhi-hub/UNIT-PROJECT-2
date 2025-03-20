@@ -5,6 +5,11 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center">Edit Policy</h2>
+    
+    <!-- ✅ إظهار اسم الكاتب -->
+    <p class="text-center text-muted mb-4" style="font-size: 0.9rem;">
+        <i class="bi bi-person-circle"></i> This policy was added by: <strong>{{ policy.author.username }}</strong>
+    </p>
 
     <form method="POST">
         {% csrf_token %}

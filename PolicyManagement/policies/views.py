@@ -2,38 +2,51 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
-from .models import Policy ,Bookmark
-from .forms import PolicyForm
 from django.contrib import messages
-from notifications.models import Notification
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
+from .models import Policy, Bookmark, Comment, Rating
+from .forms import PolicyForm, CommentForm, RatingForm
+from notifications.models import Notification
+
 User = get_user_model()
 
 # الصفحة الرئيسية
+# def home(request):
+#     policies = Policy.objects.order_by('-created_at')
+#     paginator = Paginator(policies, 6)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+#     return render(request, 'home.html', {'page_obj': page_obj})
+
 def home(request):
     policies = Policy.objects.order_by('-created_at')
+
+    # حساب متوسط التقييم لكل سياسة
+    for policy in policies:
+        ratings = policy.ratings.all()
+        if ratings.exists():
+            avg = sum([r.stars for r in ratings]) / ratings.count()
+            policy.average_rating = round(avg, 1)
+        else:
+            policy.average_rating = 0
+
     paginator = Paginator(policies, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
     return render(request, 'home.html', {'page_obj': page_obj})
 
 # قائمة السياسات مع البحث والتصنيف
 def policy_list(request):
     query = request.GET.get('q', '')
     category_filter = request.GET.get('category', '')
-
     policies = Policy.objects.all()
 
     if query:
-        policies = policies.filter(
-            title__icontains=query
-        ) | policies.filter(
-            description__icontains=query
-        )
-
+        policies = policies.filter(title__icontains=query) | policies.filter(description__icontains=query)
     if category_filter:
         policies = policies.filter(category=category_filter)
 
@@ -47,15 +60,49 @@ def policy_list(request):
         'category_filter': category_filter
     })
 
-# صفحة تفاصيل السياسة
+# صفحة تفاصيل السياسة مع التعليقات والتقييم
 def policy_detail(request, policy_id):
     policy = get_object_or_404(Policy, id=policy_id)
+    comments = policy.comments.order_by('-created_at')
+
+    # هل تم حفظه بالمفضلة؟
     is_bookmarked = False
     if request.user.is_authenticated:
         is_bookmarked = policy.bookmarked_by.filter(id=request.user.pk).exists()
+
+    # إعداد نماذج التعليق والتقييم
+    comment_form = CommentForm()
+    rating_form = RatingForm()
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        if 'comment' in request.POST:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.policy = policy
+                comment.user = request.user
+                comment.save()
+                messages.success(request, "✅ Your comment has been added.")
+                return redirect('policy_detail', policy_id=policy.id)
+
+        elif 'rate' in request.POST:
+            rating_form = RatingForm(request.POST)
+            if rating_form.is_valid():
+                # تحديث أو إنشاء تقييم جديد لنفس المستخدم والسياسة
+                Rating.objects.update_or_create(
+                    user=request.user,
+                    policy=policy,
+                    defaults={'stars': rating_form.cleaned_data['stars']}
+                )
+                messages.success(request, "⭐ Your rating has been submitted.")
+                return redirect('policy_detail', policy_id=policy.id)
+
     return render(request, 'policies/policy_detail.html', {
         'policy': policy,
-        'is_bookmarked': is_bookmarked
+        'is_bookmarked': is_bookmarked,
+        'comments': comments,
+        'comment_form': comment_form,
+        'rating_form': rating_form
     })
 
 # إضافة سياسة
@@ -67,12 +114,10 @@ def add_policy(request):
             policy = form.save(commit=False)
             policy.author = request.user
             policy.save()
-
             Notification.objects.create(
                 recipient=policy.author,
                 message=f"Your policy '{policy.title}' has been submitted for approval."
             )
-
             messages.success(request, "✅ Policy added successfully and sent for approval.")
             return redirect('policy_list')
     else:
@@ -80,6 +125,7 @@ def add_policy(request):
 
     return render(request, 'policies/add_policy.html', {'form': form})
 
+# تعديل سياسة
 @login_required
 def edit_policy(request, policy_id):
     policy = get_object_or_404(Policy, id=policy_id)
@@ -89,7 +135,7 @@ def edit_policy(request, policy_id):
         return redirect('policy_list')
 
     if request.method == 'POST':
-        form = PolicyForm(request.POST, instance=policy)
+        form = PolicyForm(request.POST, request.FILES, instance=policy)
         if form.is_valid():
             form.save()
             messages.success(request, "✅ Policy updated successfully!")
@@ -101,6 +147,7 @@ def edit_policy(request, policy_id):
 
     return render(request, 'policies/edit_policy.html', {'form': form, 'policy': policy})
 
+# حذف سياسة
 @login_required
 def delete_policy(request, policy_id):
     policy = get_object_or_404(Policy, id=policy_id)
@@ -116,26 +163,23 @@ def delete_policy(request, policy_id):
 
     policy.delete()
     messages.success(request, "✅ Policy deleted successfully.")
-    
     return redirect('policy_list')
 
-# ✅ toggle bookmark - تم التعديل هنا
-
+# إضافة أو إزالة Bookmark
 @login_required
 def toggle_bookmark(request, policy_id):
     policy = get_object_or_404(Policy, id=policy_id)
-    
     bookmark, created = Bookmark.objects.get_or_create(user=request.user, policy=policy)
-    
+
     if not created:
         bookmark.delete()
         messages.info(request, "🔖 Removed from bookmarks.")
     else:
         messages.success(request, "✅ Added to bookmarks.")
-    
+
     return redirect('policy_detail', policy_id=policy.id)
 
-# ✅ عرض bookmarks في البروفايل
+# عرض Bookmarks في البروفايل
 @login_required
 def profile_bookmarks(request):
     bookmarks = request.user.bookmarked_policies.all()

@@ -7,7 +7,6 @@
     <h2 class="text-center">Notifications ({{ unread_count }})</h2>
 
     {% if notifications %}
-        <!-- ✅ زر تحديد كل الإشعارات كمقروءة -->
         {% if unread_count > 0 %}
             <div class="text-end mb-3">
                 <a href="{% url 'mark_all_as_read' %}" class="btn btn-primary">📩 Mark All as Read</a>
@@ -18,10 +17,11 @@
             {% for notification in notifications %}
                 <li class="list-group-item d-flex justify-content-between align-items-center 
                            {% if not notification.is_read %}list-group-item-warning{% endif %}">
-                    <span>
+                    <div>
+                        <strong>{{ notification.recipient.username }}</strong>: 
                         {{ notification.message }} 
                         <small class="text-muted d-block">{{ notification.created_at|date:"Y-m-d H:i" }}</small>
-                    </span>
+                    </div>
                     {% if not notification.is_read %}
                         <a href="{% url 'mark_as_read' notification.id %}" class="btn btn-sm btn-success">✔ Mark as Read</a>
                     {% endif %}

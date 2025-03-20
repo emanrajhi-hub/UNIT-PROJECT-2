@@ -7,8 +7,12 @@
 
     {% if user.is_authenticated %}
         <h2 class="text-center">Add New Policy</h2>
+        <!-- ✅ إضافة اسم المستخدم الحالي -->
+        <p class="text-center text-muted mb-4" style="font-size: 0.9rem;">
+            <i class="bi bi-person-circle"></i> You are adding this policy as: <strong>{{ user.username }}</strong>
+        </p>
 
-        <form method="POST" enctype="multipart/form-data" class="mt-4">  <!-- ✅ يجب إضافة enctype -->
+        <form method="POST" enctype="multipart/form-data" class="mt-4">  
             {% csrf_token %}
 
             <!-- ✅ الحقول الخاصة بالنموذج -->

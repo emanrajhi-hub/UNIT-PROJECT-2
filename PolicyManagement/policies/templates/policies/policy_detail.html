@@ -5,9 +5,24 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-3">{{ policy.title }}</h2>
-    <p class="text-muted text-center mb-4">
+    <h2 class="text-center mb-2">{{ policy.title }}</h2>
+    <p class="text-muted text-center mb-1">
         <i class="bi bi-folder2-open"></i> Category: {{ policy.get_category_display }}
+    </p>
+    <p class="text-center mb-1" style="font-size: 0.9rem; color: #555;">
+        <i class="bi bi-person"></i> Added by: <strong>{{ policy.author.username }}</strong>
+    </p>
+
+    <!-- ✅ التقييم المتوسط والنجوم -->
+    <p class="text-center mb-4" style="font-size: 0.95rem; color: #f39c12;">
+        ⭐ Average Rating: {{ average_rating }} / 5 <br>
+        {% for i in "12345" %}
+            {% if forloop.counter <= average_rating|floatformat:"0" %}
+                <i class="bi bi-star-fill"></i>
+            {% else %}
+                <i class="bi bi-star"></i>
+            {% endif %}
+        {% endfor %}
     </p>
 
     <div class="card mx-auto shadow-lg" style="max-width: 600px;">
@@ -51,10 +66,9 @@
                 {% endif %}
             {% endif %}
 
-            <!-- ✅ Bookmark Button -->
             {% if user.is_authenticated %}
                 <hr>
-                <form action="{% url 'toggle_bookmark' policy.id %}" method="post" class="d-grid">
+                <form action="{% url 'toggle_bookmark' policy.id %}" method="post" class="d-grid mb-3">
                     {% csrf_token %}
                     {% if is_bookmarked %}
                         <button type="submit" class="btn btn-danger">
@@ -66,14 +80,56 @@
                         </button>
                     {% endif %}
                 </form>
-            {% endif %}
 
-            <hr>
-            <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> Created at: {{ policy.created_at|date:"Y-m-d H:i" }}</p>
-            <a href="{% url 'policy_list' %}" class="btn btn-secondary w-100">
-                <i class="bi bi-arrow-left"></i> Back to Policies
-            </a>
+                <!-- ✅ نموذج تقييم النجوم -->
+                <form action="" method="post" class="mb-4">
+                    {% csrf_token %}
+                    <label><strong>Rate this policy:</strong></label>
+                    <div class="mb-3 d-flex align-items-center gap-1">
+                        {{ rating_form.stars }}
+                        <button type="submit" name="rate" class="btn btn-sm btn-primary">Submit Rating</button>
+                    </div>
+                </form>
+
+                <!-- ✅ نموذج إضافة تعليق -->
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ comment_form.content }}
+                    </div>
+                    <button type="submit" name="comment" class="btn btn-success">Add Comment</button>
+                </form>
+            {% endif %}
         </div>
     </div>
+
+    <!-- ✅ عرض التعليقات -->
+    <div class="mt-5">
+        <h4>Comments ({{ policy.comments.count }})</h4>
+        {% for comment in comments %}
+            <div class="border rounded p-3 mb-3 shadow-sm">
+                <p class="mb-1"><strong><i class="bi bi-person-circle"></i> {{ comment.user.username }}</strong> <small class="text-muted">on {{ comment.created_at|date:"Y-m-d H:i" }}</small></p>
+                <p>{{ comment.content }}</p>
+            </div>
+        {% empty %}
+            <p class="text-muted">No comments yet.</p>
+        {% endfor %}
+    </div>
+
+    <hr>
+    <p class="text-muted mb-2"><i class="bi bi-calendar3"></i> Created at: {{ policy.created_at|date:"Y-m-d H:i" }}</p>
+    <a href="{% url 'policy_list' %}" class="btn btn-secondary w-100">
+        <i class="bi bi-arrow-left"></i> Back to Policies
+    </a>
 </div>
+
+<!-- ✅ تحسين مظهر النجوم والتعليقات -->
+<style>
+    select.form-select option {
+        font-size: 1.2rem;
+    }
+    .bi-star-fill { color: #f39c12; }
+    .bi-star { color: #ccc; }
+    .border.rounded.p-3 { background: #fafafa; }
+</style>
 {% endblock %}
