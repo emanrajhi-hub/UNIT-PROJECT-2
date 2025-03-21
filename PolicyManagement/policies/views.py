@@ -6,6 +6,9 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import get_user_model
+import os
+from django.conf import settings
+
 
 from .models import Policy, Bookmark, Comment, Rating
 from .forms import PolicyForm, CommentForm, RatingForm
@@ -124,8 +127,6 @@ def add_policy(request):
         form = PolicyForm()
 
     return render(request, 'policies/add_policy.html', {'form': form})
-
-# تعديل سياسة
 @login_required
 def edit_policy(request, policy_id):
     policy = get_object_or_404(Policy, id=policy_id)
@@ -136,8 +137,34 @@ def edit_policy(request, policy_id):
 
     if request.method == 'POST':
         form = PolicyForm(request.POST, request.FILES, instance=policy)
+
         if form.is_valid():
-            form.save()
+            # حذف الصورة إذا طلب المستخدم أو رفع صورة جديدة
+            if form.cleaned_data.get('delete_image') or request.FILES.get('image'):
+                if policy.image and os.path.isfile(policy.image.path):
+                    policy.image.close()  # ✅ إغلاق الملف قبل الحذف
+                    os.remove(policy.image.path)
+                policy.image = None
+
+            # حذف الملف إذا طلب المستخدم أو رفع ملف جديد
+            if form.cleaned_data.get('delete_file') or request.FILES.get('file'):
+                if policy.file and os.path.isfile(policy.file.path):
+                    policy.file.close()  # ✅ إغلاق الملف قبل الحذف
+                    os.remove(policy.file.path)
+                policy.file = None
+
+            # تحديث باقي الحقول
+            policy.title = form.cleaned_data['title']
+            policy.description = form.cleaned_data['description']
+            policy.category = form.cleaned_data['category']
+
+            # إعادة إضافة الصورة أو الملف الجديد إن وُجد
+            if request.FILES.get('image'):
+                policy.image = request.FILES.get('image')
+            if request.FILES.get('file'):
+                policy.file = request.FILES.get('file')
+
+            policy.save()
             messages.success(request, "✅ Policy updated successfully!")
             return redirect('policy_list')
         else:
@@ -147,23 +174,30 @@ def edit_policy(request, policy_id):
 
     return render(request, 'policies/edit_policy.html', {'form': form, 'policy': policy})
 
+
+
+
 # حذف سياسة
 @login_required
 def delete_policy(request, policy_id):
     policy = get_object_or_404(Policy, id=policy_id)
 
-    if not request.user.is_superuser:
+    # السماح بحذف السياسة إذا كان المستخدم هو صاحبها أو مشرف
+    if request.user == policy.author or request.user.is_superuser:
+        if request.method == 'POST':
+            Notification.objects.create(
+                recipient=policy.author,
+                message=f"Your policy '{policy.title}' has been deleted."
+            )
+            policy.delete()
+            messages.success(request, "✅ Policy deleted successfully.")
+            return redirect('policy_list')
+    else:
         messages.error(request, "❌ You do not have permission to delete this policy.")
         return redirect('policy_list')
 
-    Notification.objects.create(
-        recipient=policy.author,
-        message=f"Your policy '{policy.title}' has been deleted by an admin."
-    )
+    return render(request, 'policies/confirm_delete.html', {'policy': policy})
 
-    policy.delete()
-    messages.success(request, "✅ Policy deleted successfully.")
-    return redirect('policy_list')
 
 # إضافة أو إزالة Bookmark
 @login_required

@@ -6,14 +6,48 @@
 <div class="container mt-5">
     <h2 class="text-center">Edit Policy</h2>
     
-    <!-- ✅ إظهار اسم الكاتب -->
     <p class="text-center text-muted mb-4" style="font-size: 0.9rem;">
         <i class="bi bi-person-circle"></i> This policy was added by: <strong>{{ policy.author.username }}</strong>
     </p>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.non_field_errors }}
+
+        <!-- الحقول الأساسية -->
+        <div class="mb-3">{{ form.title.label_tag }} {{ form.title }}</div>
+        <div class="mb-3">{{ form.description.label_tag }} {{ form.description }}</div>
+        <div class="mb-3">{{ form.category.label_tag }} {{ form.category }}</div>
+
+        <!-- تحميل ملف جديد -->
+        <div class="mb-3">{{ form.file.label_tag }} {{ form.file }}</div>
+
+        <!-- تحميل صورة جديدة -->
+        <div class="mb-3">{{ form.image.label_tag }} {{ form.image }}</div>
+
+        <!-- ✅ معاينة الصورة الحالية -->
+        {% if policy.image %}
+            <div class="mb-3">
+                <label>Current Image:</label><br>
+                <img src="{{ policy.image.url }}" alt="Current Image" style="max-width: 150px; max-height: 150px;" class="rounded shadow-sm">
+            </div>
+        {% endif %}
+
+        <!-- ✅ معاينة الملف الحالي -->
+        {% if policy.file %}
+            <div class="mb-3">
+                <label>Current File:</label><br>
+                <a href="{{ policy.file.url }}" target="_blank">{{ policy.file.name|slice:"10:" }}</a>
+            </div>
+        {% endif %}
+
+        <!-- ✅ Checkboxes للحذف -->
+        <div class="form-check mb-2">
+            {{ form.delete_image }} {{ form.delete_image.label_tag }}
+        </div>
+        <div class="form-check mb-3">
+            {{ form.delete_file }} {{ form.delete_file.label_tag }}
+        </div>
 
         <button type="submit" class="btn btn-success">Save Changes</button>
         <a href="{% url 'policy_list' %}" class="btn btn-secondary">Cancel</a>

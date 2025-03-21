@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from users.models import CustomUser
+import os
 
 class Policy(models.Model):
     STATUS_CHOICES = [
@@ -20,7 +21,7 @@ class Policy(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    file = models.FileField(upload_to='policies/')
+    file = models.FileField(upload_to='policies/files/', blank=True, null=True)
     image = models.ImageField(upload_to='policies/images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -28,6 +29,23 @@ class Policy(models.Model):
 
     def __str__(self):
         return self.title
+
+    # ✅ حذف الملف القديم قبل رفع جديد
+    def save(self, *args, **kwargs):
+        try:
+            # لو فيه تعديل للملف
+            if self.pk:
+                old_policy = Policy.objects.get(pk=self.pk)
+                if old_policy.file and old_policy.file != self.file:
+                    if os.path.isfile(old_policy.file.path):
+                        os.remove(old_policy.file.path)
+                if old_policy.image and old_policy.image != self.image:
+                    if os.path.isfile(old_policy.image.path):
+                        os.remove(old_policy.image.path)
+        except Policy.DoesNotExist:
+            pass  # حالة الإضافة الجديدة
+
+        super().save(*args, **kwargs)
 
 
 class Bookmark(models.Model):
@@ -42,7 +60,6 @@ class Bookmark(models.Model):
         return f"{self.user.username} bookmarked {self.policy.title}"
 
 
-# ✅ نموذج التعليقات المرتبط بالسياسات
 class Comment(models.Model):
     policy = models.ForeignKey(Policy, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -53,11 +70,10 @@ class Comment(models.Model):
         return f"Comment by {self.user.username} on {self.policy.title}"
 
 
-# ✅ نموذج التقييم المرتبط بالسياسات
 class Rating(models.Model):
     policy = models.ForeignKey(Policy, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    stars = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])  # 1 to 5 stars
+    stars = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

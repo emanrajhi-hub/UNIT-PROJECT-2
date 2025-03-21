@@ -26,6 +26,7 @@
     </p>
 
     <div class="card mx-auto shadow-lg" style="max-width: 600px;">
+        <!-- ✅ الصورة -->
         {% if policy.image %}
             <div class="text-center mt-3">
                 <img src="{{ policy.image.url }}" class="rounded img-fluid" style="max-height: 180px; object-fit: contain;" alt="Policy Image">
@@ -40,6 +41,7 @@
             <p class="card-text"><strong><i class="bi bi-info-circle"></i> Description:</strong></p>
             <p>{{ policy.description }}</p>
 
+            <!-- ✅ الملف -->
             {% if policy.file %}
                 <hr>
                 <p><strong><i class="bi bi-paperclip"></i> Attached File:</strong></p>
@@ -123,7 +125,6 @@
     </a>
 </div>
 
-<!-- ✅ تحسين مظهر النجوم والتعليقات -->
 <style>
     select.form-select option {
         font-size: 1.2rem;
