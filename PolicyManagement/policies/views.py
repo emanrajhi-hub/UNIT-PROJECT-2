@@ -246,3 +246,20 @@ def contact_us(request):
             messages.error(request, "⚠️ Please fill all fields.")
 
     return render(request, 'contact_us.html')
+
+
+@login_required
+def dashboard(request):
+    total_policies = Policy.objects.count()
+    approved_policies = Policy.objects.filter(status='Approved').count()
+    pending_policies = Policy.objects.filter(status='Pending').count()
+    rejected_policies = Policy.objects.filter(status='Rejected').count()
+    total_users = User.objects.count()
+
+    return render(request, 'policies/dashboard.html', {
+        'total_policies': total_policies,
+        'approved_policies': approved_policies,
+        'pending_policies': pending_policies,
+        'rejected_policies': rejected_policies,
+        'total_users': total_users,
+    })

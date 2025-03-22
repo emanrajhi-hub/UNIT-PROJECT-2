@@ -38,7 +38,12 @@
 
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}?v={{ timestamp }}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'policy_list' %}?v={{ timestamp }}">Policies</a></li>
-                    
+
+                    <!-- ✅ رابط الـ Dashboard -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}?v={{ timestamp }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    </li>
+
                     {% if user.is_authenticated and user.policy_set.exists %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'approvals_list' %}?v={{ timestamp }}">Approvals</a></li>
                     {% endif %}

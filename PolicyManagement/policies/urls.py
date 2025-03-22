@@ -13,4 +13,9 @@ urlpatterns = [
 
     # ✅ صفحة عرض جميع bookmarks داخل صفحة البروفايل
     path('bookmarks/', views.profile_bookmarks, name='profile_bookmarks'),
+
+    path('dashboard/', views.dashboard, name='dashboard'),
+
 ]
+
+

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">📊 Dashboard Overview</h2>
+
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-bg-primary shadow-sm h-100 dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-folder-fill display-5 mb-2"></i>
+                    <h5 class="card-title">Total Policies</h5>
+                    <p class="display-6">{{ total_policies }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-bg-success shadow-sm h-100 dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle-fill display-5 mb-2"></i>
+                    <h5 class="card-title">Approved Policies</h5>
+                    <p class="display-6">{{ approved_policies }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-bg-warning shadow-sm h-100 dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-hourglass-split display-5 mb-2"></i>
+                    <h5 class="card-title">Pending Policies</h5>
+                    <p class="display-6">{{ pending_policies }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-bg-danger shadow-sm h-100 dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-x-circle-fill display-5 mb-2"></i>
+                    <h5 class="card-title">Rejected Policies</h5>
+                    <p class="display-6">{{ rejected_policies }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% if user.is_superuser %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card text-bg-dark shadow-sm h-100 dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill display-5 mb-2"></i>
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="display-6">{{ total_users }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<style>
+    /* ✅ Animation */
+    .dashboard-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ✅ تحسين الألوان في الوضع الليلي */
+    body.dark-mode .dashboard-card {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+</style>
+{% endblock %}
