@@ -246,8 +246,6 @@ def contact_us(request):
             messages.error(request, "⚠️ Please fill all fields.")
 
     return render(request, 'contact_us.html')
-
-
 @login_required
 def dashboard(request):
     total_policies = Policy.objects.count()
@@ -256,10 +254,32 @@ def dashboard(request):
     rejected_policies = Policy.objects.filter(status='Rejected').count()
     total_users = User.objects.count()
 
+    # ✅ AI Suggestions (English)
+    ai_suggestions = []
+    if pending_policies > 5:
+        ai_suggestions.append("🔔 More than 5 policies are pending review. Please check them soon.")
+    
+    if rejected_policies > 0:
+        ai_suggestions.append(f"❌ There are {rejected_policies} rejected policies. Consider reviewing and updating them.")
+    
+    if approved_policies > total_policies / 2 and total_policies > 0:
+        ai_suggestions.append("✅ Over half of the policies have been approved. Keep up the good work!")
+    
+    if total_users > 10:
+        ai_suggestions.append("👥 Your platform is growing! Monitor user activities and notifications closely.")
+
+    # ✅ Latest Activities based on notifications
+    latest_notifications = Notification.objects.order_by('-created_at')[:5]
+    latest_activities = []
+    for notif in latest_notifications:
+        latest_activities.append(f"{notif.message} (for {notif.recipient.username})")
+
     return render(request, 'policies/dashboard.html', {
         'total_policies': total_policies,
         'approved_policies': approved_policies,
         'pending_policies': pending_policies,
         'rejected_policies': rejected_policies,
         'total_users': total_users,
+        'ai_suggestions': ai_suggestions,
+        'latest_activities': latest_activities,
     })

@@ -3,78 +3,113 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">📊 Dashboard Overview</h2>
+    <h2 class="mb-4 text-center">📊 Dashboard</h2>
 
-    <div class="row g-4 justify-content-center">
+    <!-- ✅ Dashboard Cards -->
+    <div class="row g-3">
 
-        <div class="col-md-4 col-sm-6">
-            <div class="card text-bg-primary shadow-sm h-100 dashboard-card">
-                <div class="card-body text-center">
-                    <i class="bi bi-folder-fill display-5 mb-2"></i>
-                    <h5 class="card-title">Total Policies</h5>
-                    <p class="display-6">{{ total_policies }}</p>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card dashboard-card text-center border-0 shadow-sm bg-primary text-white">
+                <div class="card-body">
+                    <i class="bi bi-folder-fill display-6 mb-2"></i>
+                    <h6>Total Policies</h6>
+                    <h4>{{ total_policies }}</h4>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-6">
-            <div class="card text-bg-success shadow-sm h-100 dashboard-card">
-                <div class="card-body text-center">
-                    <i class="bi bi-check-circle-fill display-5 mb-2"></i>
-                    <h5 class="card-title">Approved Policies</h5>
-                    <p class="display-6">{{ approved_policies }}</p>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card dashboard-card text-center border-0 shadow-sm bg-success text-white">
+                <div class="card-body">
+                    <i class="bi bi-check-circle-fill display-6 mb-2"></i>
+                    <h6>Approved Policies</h6>
+                    <h4>{{ approved_policies }}</h4>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-6">
-            <div class="card text-bg-warning shadow-sm h-100 dashboard-card">
-                <div class="card-body text-center">
-                    <i class="bi bi-hourglass-split display-5 mb-2"></i>
-                    <h5 class="card-title">Pending Policies</h5>
-                    <p class="display-6">{{ pending_policies }}</p>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card dashboard-card text-center border-0 shadow-sm bg-warning text-dark">
+                <div class="card-body">
+                    <i class="bi bi-hourglass-split display-6 mb-2"></i>
+                    <h6>Pending Policies</h6>
+                    <h4>{{ pending_policies }}</h4>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-6">
-            <div class="card text-bg-danger shadow-sm h-100 dashboard-card">
-                <div class="card-body text-center">
-                    <i class="bi bi-x-circle-fill display-5 mb-2"></i>
-                    <h5 class="card-title">Rejected Policies</h5>
-                    <p class="display-6">{{ rejected_policies }}</p>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card dashboard-card text-center border-0 shadow-sm bg-danger text-white">
+                <div class="card-body">
+                    <i class="bi bi-x-circle-fill display-6 mb-2"></i>
+                    <h6>Rejected Policies</h6>
+                    <h4>{{ rejected_policies }}</h4>
                 </div>
             </div>
         </div>
 
         {% if user.is_superuser %}
-        <div class="col-md-4 col-sm-6">
-            <div class="card text-bg-dark shadow-sm h-100 dashboard-card">
-                <div class="card-body text-center">
-                    <i class="bi bi-people-fill display-5 mb-2"></i>
-                    <h5 class="card-title">Total Users</h5>
-                    <p class="display-6">{{ total_users }}</p>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card dashboard-card text-center border-0 shadow-sm bg-dark text-white">
+                <div class="card-body">
+                    <i class="bi bi-people-fill display-6 mb-2"></i>
+                    <h6>Total Users</h6>
+                    <h4>{{ total_users }}</h4>
                 </div>
             </div>
         </div>
         {% endif %}
+    </div>
 
+    <!-- ✅ Latest Activities -->
+    <div class="mt-5">
+        <h4><i class="bi bi-clock-history"></i> Latest Activities</h4>
+        <ul class="list-group small">
+            {% for activity in latest_activities %}
+                <li class="list-group-item d-flex align-items-center">
+                    <i class="bi bi-arrow-right-short me-2 text-secondary"></i> {{ activity }}
+                </li>
+            {% empty %}
+                <li class="list-group-item text-muted">No recent activities.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- ✅ AI Suggestions -->
+    {% if ai_suggestions %}
+    <div class="mt-5">
+        <h4><i class="bi bi-lightbulb"></i> AI Suggestions</h4>
+        <ul class="list-group small">
+            {% for suggestion in ai_suggestions %}
+                <li class="list-group-item d-flex align-items-center">
+                    <i class="bi bi-stars me-2 text-primary"></i> {{ suggestion }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- ✅ Quick Links -->
+    <div class="mt-5">
+        <h4><i class="bi bi-lightning"></i> Quick Links</h4>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'policy_list' %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-folder"></i> View Policies</a>
+            <a href="{% url 'add_policy' %}" class="btn btn-outline-success btn-sm"><i class="bi bi-plus-circle"></i> Add Policy</a>
+            <a href="{% url 'notifications_list' %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-bell"></i> Notifications</a>
+        </div>
     </div>
 </div>
 
 <style>
-    /* ✅ Animation */
     .dashboard-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .dashboard-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     }
-
-    /* ✅ تحسين الألوان في الوضع الليلي */
     body.dark-mode .dashboard-card {
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255,255,255,0.1);
     }
 </style>
 {% endblock %}
