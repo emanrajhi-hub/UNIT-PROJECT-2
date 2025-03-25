@@ -63,6 +63,24 @@
             </div>
         </div>
 
+        <!-- ✅ Chatbot Floating Button -->
+        <div id="chatbot" class="chatbot shadow-lg">
+            <div class="chat-header">
+                🤖 AI Chat Assistant
+                <button id="close-chat" class="btn-close btn-close-white"></button>
+            </div>
+            <div class="chat-body">
+                <p><strong>👋 Hello! Need help with submitting a policy?</strong></p>
+                <button class="btn btn-sm btn-outline-light mt-2 w-100 mb-2" onclick="showReply('title')">How to write a good title?</button>
+                <button class="btn btn-sm btn-outline-light w-100 mb-2" onclick="showReply('file')">What files can I upload?</button>
+                <button class="btn btn-sm btn-outline-light w-100" onclick="showReply('category')">How to choose the right category?</button>
+                <div id="bot-reply" class="mt-3 text-info small"></div>
+            </div>
+        </div>
+
+        <!-- Floating button -->
+        <button id="open-chat" class="btn btn-primary chatbot-btn"><i class="bi bi-chat-dots"></i></button>
+
     {% else %}
         <div class="alert alert-warning text-center" role="alert">
             <i class="bi bi-lock-fill"></i> You need to <a href="{% url 'account_login' %}" class="alert-link">Login</a> or <a href="{% url 'account_signup' %}" class="alert-link">Sign Up</a> to add a new policy.
@@ -72,10 +90,66 @@
 </div>
 
 <style>
-    /* ✅ تحسين تصميم القائمة في الوضع الليلي */
-    body.dark-mode .list-group-item {
-        background: #222;
-        color: #ddd;
+    /* Chatbot styles */
+    .chatbot {
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        background: #343a40;
+        color: #fff;
+        width: 280px;
+        border-radius: 8px;
+        display: none;
+        z-index: 999;
+    }
+    .chat-header {
+        background: #212529;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    .chat-body {
+        padding: 10px;
+    }
+    .chatbot-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
     }
 </style>
+
+<script>
+    const chatbot = document.getElementById('chatbot');
+    const openChat = document.getElementById('open-chat');
+    const closeChat = document.getElementById('close-chat');
+    const replyBox = document.getElementById('bot-reply');
+
+    openChat.addEventListener('click', () => {
+        chatbot.style.display = 'block';
+        openChat.style.display = 'none';
+    });
+
+    closeChat.addEventListener('click', () => {
+        chatbot.style.display = 'none';
+        openChat.style.display = 'block';
+        replyBox.innerHTML = '';
+    });
+
+    function showReply(type) {
+        if (type === 'title') {
+            replyBox.innerHTML = "✅ A good title should be short, clear, and descriptive of the policy content.";
+        } else if (type === 'file') {
+            replyBox.innerHTML = "✅ You can upload PDF, DOCX, or image files related to your policy.";
+        } else if (type === 'category') {
+            replyBox.innerHTML = "✅ Choose the category that best matches your policy type (HR, IT, Finance, etc).";
+        }
+    }
+</script>
+
 {% endblock %}
