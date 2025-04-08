@@ -330,7 +330,14 @@ def dashboard(request):
         ai_suggestions.append("👥 Your platform is growing! Monitor user activities and notifications closely.")
 
     # ✅ Latest Activities based on notifications
-    latest_notifications = Notification.objects.order_by('-created_at')[:5]
+    #latest_notifications = Notification.objects.order_by('-created_at')[:5]
+
+    if request.user.is_superuser:
+       latest_notifications = Notification.objects.order_by('-created_at')[:5]
+    else:
+       latest_notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')[:5]
+
+
     latest_activities = []
     for notif in latest_notifications:
         if notif.link:
