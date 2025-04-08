@@ -38,6 +38,9 @@
                     <option value="Finance" {% if request.GET.category == "Finance" %}selected{% endif %}>Finance</option>
                     <option value="Engineering" {% if request.GET.category == "Engineering" %}selected{% endif %}>Engineering</option>
                     <option value="Private" {% if request.GET.category == "Private" %}selected{% endif %}>Private Sectors</option>
+                    <option value="Information Security" {% if request.GET.category == "Information Security" %}selected{% endif %}>Information Security</option>
+                    <option value="Governance & Quality" {% if request.GET.category == "Governance & Quality" %}selected{% endif %}>Governance & Quality </option>
+
                 </select>
             </div>
         </div>
@@ -61,17 +64,24 @@
                     {% for policy in policies %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>
-                                {% if policy.image %}
-                                    <img src="{{ policy.image.url }}" alt="Policy Image" width="80" class="rounded shadow-sm">
-                                {% else %}
-                                    <img src="{% static 'images/default-policy.jpg' %}" alt="Default Image" width="80" class="rounded shadow-sm">
-                                {% endif %}
-                            </td>
-                            <td>
-                                <strong>{{ policy.title }}</strong><br>
-                                <small class="text-muted">by {{ policy.author.username }}</small>
-                            </td>
+
+                          <td>
+                           {% if policy.image %}
+                               <img src="{{ policy.image.url }}" alt="Policy Image" width="80" class="rounded shadow-sm">
+                               {% else %}
+                               <div style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #555; margin: auto;">
+                                 {{ policy.title|slice:":2"|upper }}
+                               </div>
+                             {% endif %}
+                             
+                          </td>
+                          <td>
+                          <strong>{{ policy.title }}</strong><br>
+                          <small class="text-muted">by {{ policy.author.username }}</small><br>
+                          <small class="text-muted d-block">Category: {{ policy.get_category_display }}</small>
+                          </td>
+
+
                             <td>{{ policy.description|truncatewords:10 }}</td>
                             <td>
                                 <div class="text-warning" style="font-size: 0.8rem;">

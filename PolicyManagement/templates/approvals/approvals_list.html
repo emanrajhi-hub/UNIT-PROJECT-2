@@ -36,13 +36,15 @@
                             <td>{{ policy.author.username }}</td>  <!-- ✅ عرض اسم الشخص الذي أضاف السياسة -->
                             <td>
                                 <!-- ✅ إظهار تفاصيل السياسة للجميع -->
-                                <a href="{% url 'policy_detail' policy.id %}" class="btn btn-info btn-sm">View</a>
-
-                                {% if user.is_superuser %}  
-                                    <!-- ✅ إظهار أزرار القبول والرفض فقط للمشرف -->
-                                    <a href="{% url 'approve_policy' policy.id %}" class="btn btn-success btn-sm">Approve</a>
-                                    <a href="{% url 'reject_policy' policy.id %}" class="btn btn-danger btn-sm">Reject</a>
-                                {% endif %}
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'policy_detail' policy.id %}" class="btn btn-info" title="View"><i class="bi bi-eye"></i></a>
+                                    
+                                    {% if user.is_superuser %}
+                                        <a href="{% url 'approve_policy' policy.id %}" class="btn btn-success" title="Approve"><i class="bi bi-check-circle"></i></a>
+                                        <a href="{% url 'reject_policy' policy.id %}" class="btn btn-danger" title="Reject"><i class="bi bi-x-circle"></i></a>
+                                    {% endif %}
+                                </div>
+                                
                             </td>
                         </tr>
                     {% endfor %}

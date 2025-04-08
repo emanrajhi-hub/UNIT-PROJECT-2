@@ -19,7 +19,7 @@ from django.urls import path , include
 from policies.views import home  # استيراد الصفحة الرئيسية
 from django.conf import settings  # تأكد من استيراده
 from django.conf.urls.static import static  # تأكد من استيراده
-from policies.views import home, about_us, contact_us
+from policies.views import home, about_us, contact_us , message_list , reply_message
 
 
 
@@ -44,6 +44,10 @@ urlpatterns = [
     path('approvals/', include('approvals.urls')),  # ✅ إضافة مسار approvals
 
     path('notifications/', include('notifications.urls')),  # ✅ إضافة مسار notifications
+
+    path('messages/', message_list, name='message_list'),
+
+    path('messages/<int:message_id>/reply/', reply_message, name='reply_message'),
 
 
 ]

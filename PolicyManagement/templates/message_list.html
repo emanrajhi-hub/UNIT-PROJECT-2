@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Messages Inbox{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">📩 Messages Inbox</h2>
+
+    {% if messages %}
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>From</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Sent At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for msg in messages %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ msg.name }}</td>
+                        <td>{{ msg.email }}</td>
+                        <td>{{ msg.content|truncatewords:10 }}</td>
+                        <td>{{ msg.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            {% if msg.is_replied %}
+                                <span class="badge bg-success">Replied</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'reply_message' msg.id %}" class="btn btn-primary btn-sm">Reply</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center">No messages yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

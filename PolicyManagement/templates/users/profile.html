@@ -27,15 +27,23 @@
                     <p class="card-text text-muted">{{ user.email }}</p>
 
                     <!-- روابط وأزرار -->
-                    <div class="d-grid gap-2 col-8 mx-auto">
-                        <a href="{% url 'edit_profile' %}" class="btn btn-outline-info btn-sm">✏️ Edit Profile</a>
-                        <a href="{% url 'change_password' %}" class="btn btn-outline-warning btn-sm">🔒 Change Password</a>
-                        <form method="POST" action="{% url 'send_test_email' %}" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-secondary btn-sm">📧 Send Test Email</button>
-                        </form>
-                        <a href="{% url 'account_logout' %}" class="btn btn-outline-danger btn-sm">🚪 Logout</a>
-                    </div>
+                    <!-- روابط وأزرار -->
+<div class="d-grid gap-2 col-8 mx-auto">
+    <a href="{% url 'edit_profile' %}" class="btn btn-outline-info btn-sm">✏️ Edit Profile</a>
+    <a href="{% url 'change_password' %}" class="btn btn-outline-warning btn-sm">🔒 Change Password</a>
+
+    <!-- ✅ الزر الجديد: رسائلي -->
+    <a href="{% if user.is_superuser %}{% url 'message_list' %}{% else %}{% url 'user_messages' %}{% endif %}" class="btn btn-outline-primary btn-sm">
+        📬 View My Messages
+    </a>
+    
+    <form method="POST" action="{% url 'send_test_email' %}" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-secondary btn-sm">📧 Send Test Email</button>
+    </form>
+    <a href="{% url 'account_logout' %}" class="btn btn-outline-danger btn-sm">🚪 Logout</a>
+</div>
+
                 </div>
             </div>
 

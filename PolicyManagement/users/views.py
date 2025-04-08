@@ -9,6 +9,9 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 from policies.models import Bookmark  # ✅ استيراد Bookmark
 
+from policies.models import Message
+
+
 @login_required
 def profile(request):
     # ✅ جلب كل البوك ماركس للمستخدم مع السياسات المرتبطة بها
@@ -56,3 +59,9 @@ def change_password(request):
     else:
         form = PasswordChangeForm(user=request.user)
     return render(request, 'users/change_password.html', {'form': form})
+
+
+@login_required
+def user_messages(request):
+    messages_list = request.user.message_set.all().order_by('-created_at')
+    return render(request, 'users/user_messages.html', {'messages': messages_list})

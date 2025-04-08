@@ -27,15 +27,16 @@
 
     <div class="card mx-auto shadow-lg" style="max-width: 600px;">
         <!-- ✅ الصورة -->
-        {% if policy.image %}
-            <div class="text-center mt-3">
+        <div class="text-center mt-3">
+            {% if policy.image %}
                 <img src="{{ policy.image.url }}" class="rounded img-fluid" style="max-height: 180px; object-fit: contain;" alt="Policy Image">
+            {% else %}
+            <div style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #ccc; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; color: #555;">
+                {{ policy.title|slice:":2"|upper }}
             </div>
-        {% else %}
-            <div class="text-center mt-3">
-                <img src="{% static 'images/default-policy.jpg' %}" class="rounded img-fluid" style="max-height: 180px; object-fit: contain;" alt="Default Image">
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
+        
 
         <div class="card-body">
             <p class="card-text"><strong><i class="bi bi-info-circle"></i> Description:</strong></p>

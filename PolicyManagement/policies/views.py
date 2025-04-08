@@ -14,6 +14,12 @@ from .models import Policy, Bookmark, Comment, Rating
 from .forms import PolicyForm, CommentForm, RatingForm
 from notifications.models import Notification
 
+from .models import Message
+
+from django.urls import reverse  
+
+
+
 User = get_user_model()
 
 # الصفحة الرئيسية
@@ -227,6 +233,40 @@ def about_us(request):
     return render(request, 'about_us.html')
 
 # صفحة تواصل معنا
+
+
+# def contact_us(request):
+#     if request.method == 'POST':
+#         name = request.POST.get('name')
+#         email = request.POST.get('email')
+#         message_content = request.POST.get('message')
+
+#         if name and email and message_content:
+#             subject = f"New Contact Message from {name}"
+#             message = f"Sender Name: {name}\nSender Email: {email}\n\nMessage:\n{message_content}"
+#             from_email = settings.DEFAULT_FROM_EMAIL
+#             recipient_list = [settings.DEFAULT_FROM_EMAIL]
+
+#             # 🟢 إرسال الإيميل
+#             send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+#             # 🟢 تخزين الرسالة في قاعدة البيانات
+#             Message.objects.create(
+#                 user=request.user if request.user.is_authenticated else None,
+#                 name=name,
+#                 email=email,
+#                 content=message_content
+#             )
+
+#             messages.success(request, "✅ Your message has been sent and saved successfully!")
+#             return redirect('contact_us')
+#         else:
+#             messages.error(request, "⚠️ Please fill all fields.")
+
+#     return render(request, 'contact_us.html')
+
+
+
 def contact_us(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -239,13 +279,34 @@ def contact_us(request):
             from_email = settings.DEFAULT_FROM_EMAIL
             recipient_list = [settings.DEFAULT_FROM_EMAIL]
 
+            # 🟢 إرسال الإيميل
             send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-            messages.success(request, "✅ Your message has been sent successfully!")
+
+            # 🟢 تخزين الرسالة في قاعدة البيانات
+            new_msg = Message.objects.create(
+                user=request.user if request.user.is_authenticated else None,
+                name=name,
+                email=email,
+                content=message_content
+            )
+
+            # ✅ إرسال إشعار للإدمنين داخل الموقع
+            admin_users = User.objects.filter(is_staff=True)
+            for admin in admin_users:
+                Notification.objects.create(
+                    recipient=admin,
+                    message=f"📩 New contact message received from {name}.",
+                    link= reverse('message_list')  # عدّل الرابط لو عندك مسار ثاني لعرض الرسائل
+                )
+
+            messages.success(request, "✅ Your message has been sent and saved successfully!")
             return redirect('contact_us')
         else:
             messages.error(request, "⚠️ Please fill all fields.")
 
     return render(request, 'contact_us.html')
+
+
 @login_required
 def dashboard(request):
     total_policies = Policy.objects.count()
@@ -272,7 +333,13 @@ def dashboard(request):
     latest_notifications = Notification.objects.order_by('-created_at')[:5]
     latest_activities = []
     for notif in latest_notifications:
-        latest_activities.append(f"{notif.message} (for {notif.recipient.username})")
+        if notif.link:
+          activity = f'<a href="{notif.link}">{notif.message}</a>'
+        else:
+          activity = notif.message
+        latest_activities.append(activity)
+
+
 
     return render(request, 'policies/dashboard.html', {
         'total_policies': total_policies,
@@ -283,3 +350,86 @@ def dashboard(request):
         'ai_suggestions': ai_suggestions,
         'latest_activities': latest_activities,
     })
+
+
+#from .models import Message
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.timezone import now
+
+@staff_member_required  # فقط للمشرفين
+def message_list(request):
+    messages_list = Message.objects.order_by('-created_at')
+    return render(request, 'message_list.html', {
+        'messages': messages_list
+    })
+
+
+from django.core.mail import send_mail
+#from django.utils.timezone import now
+#from .models import Message
+
+#from django.contrib.admin.views.decorators import staff_member_required
+
+
+# @staff_member_required
+# def reply_message(request, message_id):
+#     msg = get_object_or_404(Message, id=message_id)
+
+#     if request.method == 'POST':
+#         reply_text = request.POST.get('reply')
+#         if reply_text:
+#             # حفظ الرد في قاعدة البيانات
+#             msg.reply = reply_text
+#             msg.is_replied = True
+#             msg.replied_at = now()
+#             msg.save()
+
+#             # إرسال الرد عبر الإيميل
+#             subject = f"Reply to your message - Policy Management"
+#             email_body = f"Dear {msg.name},\n\nYour message:\n{msg.content}\n\nAdmin reply:\n{reply_text}\n\nThank you."
+#             send_mail(subject, email_body, settings.DEFAULT_FROM_EMAIL, [msg.email], fail_silently=False)
+
+#             messages.success(request, "✅ Reply sent successfully and saved.")
+#             return redirect('message_list')
+#         else:
+#             messages.error(request, "⚠️ Reply cannot be empty.")
+
+#     return render(request, 'reply_message.html', {'message': msg})
+
+
+
+from notifications.models import Notification  # تأكد أنه مستورد
+
+@staff_member_required
+def reply_message(request, message_id):
+    msg = get_object_or_404(Message, id=message_id)
+
+    if request.method == 'POST':
+        reply_text = request.POST.get('reply')
+        if reply_text:
+            # حفظ الرد في قاعدة البيانات
+            msg.reply = reply_text
+            msg.is_replied = True
+            msg.replied_at = now()
+            msg.save()
+
+            # إرسال الرد عبر الإيميل
+            subject = f"Reply to your message - Policy Management"
+            email_body = f"Dear {msg.name},\n\nYour message:\n{msg.content}\n\nAdmin reply:\n{reply_text}\n\nThank you."
+            send_mail(subject, email_body, settings.DEFAULT_FROM_EMAIL, [msg.email], fail_silently=False)
+
+            # ✅ إشعار للمستخدم في النظام (إذا كان مسجّل دخول)
+            if msg.user:
+                Notification.objects.create(
+                    recipient=msg.user,
+                    message=f"📬 You have a new reply to your contact message. Click to view.",
+                    link="/users/my-messages/"  # عدل المسار إذا كان مختلف
+                )
+
+            messages.success(request, "✅ Reply sent successfully and saved.")
+            return redirect('message_list')
+        else:
+            messages.error(request, "⚠️ Reply cannot be empty.")
+
+    return render(request, 'reply_message.html', {'message': msg})
+

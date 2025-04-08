@@ -67,7 +67,7 @@
         <ul class="list-group small">
             {% for activity in latest_activities %}
                 <li class="list-group-item d-flex align-items-center">
-                    <i class="bi bi-arrow-right-short me-2 text-secondary"></i> {{ activity }}
+                    <i class="bi bi-arrow-right-short me-2 text-secondary"></i> {{ activity|safe }}
                 </li>
             {% empty %}
                 <li class="list-group-item text-muted">No recent activities.</li>

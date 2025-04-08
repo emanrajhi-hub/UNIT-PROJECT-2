@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Reply to Message{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">📨 Reply to {{ message.name }}</h2>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <p><strong>Original Message:</strong></p>
+            <p>{{ message.content }}</p>
+            <hr>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="reply" class="form-label">Your Reply</label>
+                    <textarea name="reply" id="reply" rows="5" class="form-control" required>{{ message.reply }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Reply</button>
+                <a href="{% url 'message_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

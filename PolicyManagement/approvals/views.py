@@ -5,19 +5,35 @@ from notifications.models import Notification
 from django.contrib import messages
 from django.http import HttpResponseForbidden
 
+# @login_required
+# def approvals_list(request):
+#     """ 🔹 المشرف يرى جميع السياسات المعلقة، بينما المستخدم العادي يرى فقط لو كان قد أضاف سياسات """
+#     if request.user.is_superuser:
+#         policies = Policy.objects.filter(status='Pending').order_by('-created_at')
+#     else:
+#         user_policies = Policy.objects.filter(author=request.user)
+#         if not user_policies.exists():
+#             messages.warning(request, "⚠️ You don't have any policies yet to track approvals.")
+#             return redirect('policy_list')  # يعيده إلى صفحة السياسات أو أي صفحة تناسبك
+#         policies = user_policies.order_by('-created_at')
+
+#     return render(request, 'approvals/approvals_list.html', {'policies': policies})
+
 @login_required
 def approvals_list(request):
-    """ 🔹 المشرف يرى جميع السياسات المعلقة، بينما المستخدم العادي يرى فقط لو كان قد أضاف سياسات """
+    """ 🔹 المشرف يرى جميع السياسات المعلقة، بينما المستخدم العادي يرى فقط سياساته المعلقة (Pending فقط) """
     if request.user.is_superuser:
         policies = Policy.objects.filter(status='Pending').order_by('-created_at')
     else:
-        user_policies = Policy.objects.filter(author=request.user)
-        if not user_policies.exists():
-            messages.warning(request, "⚠️ You don't have any policies yet to track approvals.")
+        user_pending_policies = Policy.objects.filter(author=request.user, status='Pending')
+        if not user_pending_policies.exists():
+            messages.warning(request, "⚠️ You don't have any pending policies to track.")
             return redirect('policy_list')  # يعيده إلى صفحة السياسات أو أي صفحة تناسبك
-        policies = user_policies.order_by('-created_at')
+        policies = user_pending_policies.order_by('-created_at')
 
     return render(request, 'approvals/approvals_list.html', {'policies': policies})
+
+
 
 @login_required
 @permission_required('policies.change_policy', raise_exception=True)

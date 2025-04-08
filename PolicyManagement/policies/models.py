@@ -14,8 +14,10 @@ class Policy(models.Model):
         ('HR', 'Human Resources'),
         ('IT', 'Information Technology'),
         ('Finance', 'Finance'),
-        ('Engineernig', 'Engineering'),
+        ('Engineering', 'Engineering'),
         ('Private', 'Private Sectors'),
+        ('Information Security' , 'Information Security') ,
+        ('Governance & Quality ' , 'Governance & Quality '),
     ]
 
     title = models.CharField(max_length=255)
@@ -81,3 +83,20 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.stars} stars by {self.user.username} for {self.policy.title}"
+
+
+#from django.db import models
+#from django.conf import settings
+
+class Message(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    content = models.TextField()
+    reply = models.TextField(blank=True, null=True)
+    is_replied = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    replied_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Message from {self.name} ({self.email})"

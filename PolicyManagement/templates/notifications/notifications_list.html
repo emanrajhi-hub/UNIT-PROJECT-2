@@ -18,10 +18,20 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center 
                            {% if not notification.is_read %}list-group-item-warning{% endif %}">
                     <div>
-                        <strong>{{ notification.recipient.username }}</strong>: 
-                        {{ notification.message }} 
+                        <strong>{{ notification.recipient.username }}</strong>:
+                        
+                        {# ✅ تم التعديل هنا: إذا كان الإشعار يحتوي على رابط، اجعله رابطًا قابلًا للضغط #}
+                        {% if notification.link %}
+                            <a href="{{ notification.link }}" class="text-decoration-none">
+                                {{ notification.message }}
+                            </a>
+                        {% else %}
+                            {{ notification.message }}
+                        {% endif %}
+
                         <small class="text-muted d-block">{{ notification.created_at|date:"Y-m-d H:i" }}</small>
                     </div>
+
                     {% if not notification.is_read %}
                         <a href="{% url 'mark_as_read' notification.id %}" class="btn btn-sm btn-success">✔ Mark as Read</a>
                     {% endif %}
