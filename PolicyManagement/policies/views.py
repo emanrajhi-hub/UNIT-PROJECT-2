@@ -307,12 +307,71 @@ def contact_us(request):
     return render(request, 'contact_us.html')
 
 
+# @login_required
+# def dashboard(request):
+#     total_policies = Policy.objects.count()
+#     approved_policies = Policy.objects.filter(status='Approved').count()
+#     pending_policies = Policy.objects.filter(status='Pending').count()
+#     rejected_policies = Policy.objects.filter(status='Rejected').count()
+#     total_users = User.objects.count()
+
+#     # ✅ AI Suggestions (English)
+#     ai_suggestions = []
+#     if pending_policies > 5:
+#         ai_suggestions.append("🔔 More than 5 policies are pending review. Please check them soon.")
+    
+#     if rejected_policies > 0:
+#         ai_suggestions.append(f"❌ There are {rejected_policies} rejected policies. Consider reviewing and updating them.")
+    
+#     if approved_policies > total_policies / 2 and total_policies > 0:
+#         ai_suggestions.append("✅ Over half of the policies have been approved. Keep up the good work!")
+    
+#     if total_users > 10:
+#         ai_suggestions.append("👥 Your platform is growing! Monitor user activities and notifications closely.")
+
+#     # ✅ Latest Activities based on notifications
+#     #latest_notifications = Notification.objects.order_by('-created_at')[:5]
+
+#     if request.user.is_superuser:
+#        latest_notifications = Notification.objects.order_by('-created_at')[:5]
+#     else:
+#        latest_notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')[:5]
+
+
+#     latest_activities = []
+#     for notif in latest_notifications:
+#         if notif.link:
+#           activity = f'<a href="{notif.link}">{notif.message}</a>'
+#         else:
+#           activity = notif.message
+#         latest_activities.append(activity)
+
+
+
+#     return render(request, 'policies/dashboard.html', {
+#         'total_policies': total_policies,
+#         'approved_policies': approved_policies,
+#         'pending_policies': pending_policies,
+#         'rejected_policies': rejected_policies,
+#         'total_users': total_users,
+#         'ai_suggestions': ai_suggestions,
+#         'latest_activities': latest_activities,
+#     })
+
+
+
 @login_required
 def dashboard(request):
-    total_policies = Policy.objects.count()
-    approved_policies = Policy.objects.filter(status='Approved').count()
-    pending_policies = Policy.objects.filter(status='Pending').count()
-    rejected_policies = Policy.objects.filter(status='Rejected').count()
+    if request.user.is_superuser:
+        policies = Policy.objects.all()
+    else:
+        policies = Policy.objects.filter(author=request.user)
+
+    total_policies = policies.count()
+    approved_policies = policies.filter(status='Approved').count()
+    pending_policies = policies.filter(status='Pending').count()
+    rejected_policies = policies.filter(status='Rejected').count()
+    
     total_users = User.objects.count()
 
     # ✅ AI Suggestions (English)
@@ -330,23 +389,20 @@ def dashboard(request):
         ai_suggestions.append("👥 Your platform is growing! Monitor user activities and notifications closely.")
 
     # ✅ Latest Activities based on notifications
-    #latest_notifications = Notification.objects.order_by('-created_at')[:5]
+   # latest_notifications = Notification.objects.order_by('-created_at')[:5]
 
     if request.user.is_superuser:
-       latest_notifications = Notification.objects.order_by('-created_at')[:5]
+     latest_notifications = Notification.objects.order_by('-created_at')[:5]
     else:
-       latest_notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')[:5]
-
+     latest_notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')[:5]
 
     latest_activities = []
     for notif in latest_notifications:
         if notif.link:
-          activity = f'<a href="{notif.link}">{notif.message}</a>'
+            activity = f'<a href="{notif.link}">{notif.message}</a>'
         else:
-          activity = notif.message
+            activity = notif.message
         latest_activities.append(activity)
-
-
 
     return render(request, 'policies/dashboard.html', {
         'total_policies': total_policies,
@@ -359,12 +415,19 @@ def dashboard(request):
     })
 
 
+
 #from .models import Message
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.timezone import now
 
 @staff_member_required  # فقط للمشرفين
 def message_list(request):
+
+    if request.GET.get('replied') == '1':
+       messages.success(request, "✅ Reply sent successfully and saved.")
+
+
+
     messages_list = Message.objects.order_by('-created_at')
     return render(request, 'message_list.html', {
         'messages': messages_list
@@ -407,6 +470,8 @@ from django.core.mail import send_mail
 
 from notifications.models import Notification  # تأكد أنه مستورد
 
+from django.urls import reverse
+
 @staff_member_required
 def reply_message(request, message_id):
     msg = get_object_or_404(Message, id=message_id)
@@ -434,7 +499,11 @@ def reply_message(request, message_id):
                 )
 
             messages.success(request, "✅ Reply sent successfully and saved.")
-            return redirect('message_list')
+           # return redirect('message_list') + '?replied=1'
+          #  return redirect(reverse('message_list') + '?replied=1')
+            return redirect(reverse('message_list') + '?replied=1&once=1')
+
+
         else:
             messages.error(request, "⚠️ Reply cannot be empty.")
 
