@@ -19,18 +19,59 @@ def profile(request):
     return render(request, 'users/profile.html', {'bookmarks': bookmarks})
 
 
+# @login_required
+# def send_test_email(request):
+#     if request.method == "POST":
+#         send_mail(
+#             'Test Email from Django',
+#             'This is a test email sent from Django project using Gmail SMTP.',
+#             settings.DEFAULT_FROM_EMAIL,
+#             [request.user.email],
+#             fail_silently=False,
+#         )
+#         messages.success(request, "✅ Test email has been sent to your email address.")
+#     return redirect('profile')
+
+
+
+
 @login_required
 def send_test_email(request):
     if request.method == "POST":
+
+        # 📨 عنوان الإيميل (السطر اللي يظهر في العنوان)
+        subject = 'Test Email from Django'
+
+        # ✉️ الرسالة النصية العادية (في حال الإيميل ما يدعم HTML)
+        message = 'This is a test email sent from Django project using Gmail SMTP.'
+
+        # 🌟 هذا هو محتوى الإيميل بتنسيق HTML، ويحتوي على الشعار والنص داخل تصميم مرتب
+        html_message = """
+            <div style="text-align: center; font-family: Arial, sans-serif; padding: 20px;">
+                <img src="https://i.postimg.cc/MGyX4zLh/logo.png" alt="Policy Logo" width="200" style="margin-bottom: 20px;" />
+                <h2 style="color: #333;">Test Email from Policy Management System</h2>
+                <p style="font-size: 16px; color: #555;">
+                    This is a test email sent from your Django project using Gmail SMTP.
+                </p>
+            </div>
+        """
+
+        # 🛠️ تنفيذ الإرسال باستخدام send_mail
         send_mail(
-            'Test Email from Django',
-            'This is a test email sent from Django project using Gmail SMTP.',
-            settings.DEFAULT_FROM_EMAIL,
-            [request.user.email],
-            fail_silently=False,
+            subject,                    # عنوان الإيميل
+            message,                    # الرسالة النصية العادية
+            settings.DEFAULT_FROM_EMAIL,  # بريد المرسل (من settings.py)
+            [request.user.email],       # المرسل إليه هو المستخدم الحالي
+            fail_silently=False,        # إظهار الخطأ لو حصل شيء
+            html_message=html_message   # 💡 هذا هو الجزء الجديد: محتوى الإيميل بتنسيق HTML
         )
+
+        # ✅ رسالة نجاح تظهر في الموقع
         messages.success(request, "✅ Test email has been sent to your email address.")
+
+    # 🔁 بعد الإرسال نرجع المستخدم إلى صفحة البروفايل
     return redirect('profile')
+
 
 
 @login_required

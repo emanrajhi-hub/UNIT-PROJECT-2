@@ -40,6 +40,7 @@
                     <option value="Private" {% if request.GET.category == "Private" %}selected{% endif %}>Private Sectors</option>
                     <option value="Information Security" {% if request.GET.category == "Information Security" %}selected{% endif %}>Information Security</option>
                     <option value="Governance & Quality" {% if request.GET.category == "Governance & Quality" %}selected{% endif %}>Governance & Quality </option>
+                    <option value="Communication" {% if request.GET.category == "Communication" %}selected{% endif %}>Communication </option>
 
                 </select>
             </div>
@@ -56,7 +57,8 @@
                         <th>Title & Author</th>
                         <th>Description</th>
                         <th>Rating</th>
-                        <th>Created At</th>
+                       <!--- <th>Created At</th> -->
+                        <th style="min-width: 120px; white-space: nowrap;">Created At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

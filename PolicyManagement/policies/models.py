@@ -18,6 +18,7 @@ class Policy(models.Model):
         ('Private', 'Private Sectors'),
         ('Information Security' , 'Information Security') ,
         ('Governance & Quality ' , 'Governance & Quality '),
+        ('Communication', 'Communication')
     ]
 
     title = models.CharField(max_length=255)
