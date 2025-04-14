@@ -1,140 +1,81 @@
-# UNIT-PROJECT-2
+# 📚 Policy Management System
 
-## Create a Project of your own choosing
+## 📝 Project Description
 
-Base on what you’ve learned until now , create a project of your choosing. Impress us with your creativity and execution.
+A Django-based web application for managing organizational policies efficiently.  
+The system allows users to create, edit, and submit policies, while administrators can approve, reject, or delete them.  
+Notifications are generated for each action to ensure transparency between users and administrators.
 
+---
 
-## Minimum Requirements
-- Use Django.
-- Use Templates & Template Inheritance.
-- Use static, media & dynamic urls as needed.
-- Organize your project in apps as needed.
-- Use models to represent you data.
-- Use a CSS library to style your website.
-- Must be responsive (good looking of big screens and small screens).
-- User Authentication & Authorization (register, login, logout, Limit access to some pages using permissions , etc.)
-- Use naming conventions & best practices.
-- Strive to make the user journey intuitive and complete.
+## 🚀 Features
 
-## Use python-dotenv to save your sensitive data.
-- https://pypi.org/project/python-dotenv/
-
-
-## Use a CDN or cloud storage provider to sore your large static files (videos, images, etc.), such as:
-- https://firebase.google.com/docs/storage
-
-## Use Git & Github to manage and track changes in your project.
-- At lease commit and sync the changes once at the end of everyday.
-
-## Edit the README.md file to include (include the info at the top):
-- Project Name
-- Project Description
-- Features list.
-- User Stories (link or file)
-- UML (link or file)
-- Wireframe (link or file)
+- ✅ User Registration & Authentication (Login, Logout, Sign Up)
+- ✅ Role-based access control (Admin & Regular Users)
+- ✅ Add / Edit / Delete policies
+- ✅ Approval workflow (Pending / Approved / Rejected)
+- ✅ Real-time Notifications system
+- ✅ Search & Filter policies by keyword or category
+- ✅ Bookmark favorite policies
+- ✅ Ratings & Comments on policies
+- ✅ AI Assistant when submitting policies
+- ✅ AI Suggestions on Dashboard
+- ✅ Responsive UI using Bootstrap 5
+- ✅ File Uploads (PDF, DOCX, Images)
+- ✅ Dynamic unread notification counter
+- ✅ python-dotenv to manage environment variables
+- ✅ Organized code into Django apps (users, policies, approvals, notifications)
+- ✅ Test email functionality for users from profile page
+- ✅ Logo branding in email layout
 
 
-## Example Projects :
+---
 
+## 👥 User Stories
 
-1. **Task Management System:**
-- **Overview:** Create a platform for managing tasks and projects within a team or organization.
-- **Features:**
-- User authentication and role-based access control.
-- Task creation, assignment, and tracking.
-- Project management with milestones.
-- File uploads and comments on tasks.
-- Notification system for task updates.
+- As a regular user, I want to create a new policy and submit it for review.
+- As a regular user, I want to see the status of my submitted policies.
+- As a regular user, I want to receive notifications when my policies are approved or rejected.
+- As a regular user, I want to bookmark and rate policies.
+- As an admin, I want to approve or reject submitted policies.
+- As an admin, I want to delete rejected policies after notifying users.
+- As an admin, I want to view dashboard analytics and receive AI insights.
+- As a user, I want to test email functionality from my profile page to verify notifications.
 
+---
 
+## 🛠️ Technologies Used
 
+- Django 5.1+
+- Bootstrap 5.3 (Responsive Design)
+- SQLite (or PostgreSQL ready)
+- Python-dotenv
+- Git & GitHub for version control
 
-**Online Learning Platform:**
+---
 
-- **Overview:** Develop a platform for online courses, quizzes, and educational resources.
-- **Features:**
-- User registration and profile management.
-- Course creation and enrollment.
-- Quiz and assessment functionalities.
-- Progress tracking and certificates.
+## 🗺️ UML Diagram
 
+You can find the UML diagram inside the project folder:
 
-
-
-**Crowdfunding Platform:**
-
-- **Overview:** Build a crowdfunding website where users can create campaigns and seek financial support for their projects.
-- **Features:**
-    - User profiles with project history.
-    - Campaign creation and customization.
-    - Payment integration for contributions.
-    - Progress tracking and updates.
-
-**Job Board and Recruitment System:**
-
-- **Overview:** Develop a platform for job seekers and employers to connect.
-- **Features:**
-    - User profiles with resumes.
-    - Job posting and application functionalities.
-    - Search and filter options for jobs.
-    - Employer dashboards for managing postings.
-
-
-**Inventory Management System:**
-
-- **Overview:** Build a system for tracking and managing inventory for businesses.
-- **Features:**
-    - User authentication with roles (e.g., admin, staff).
-    - Product catalog with stock levels.
-    - Order processing and tracking.
-    - Reporting and analytics.
-
-
-**Recipe Sharing Platform:**
-
-- **Overview:** Create a platform where users can share and discover recipes.
-- **Features:**
-    - User accounts with saved recipes.
-    - Recipe creation and editing.
-    - Search and categorization of recipes.
-    - User ratings and reviews.
-      
-## Resources:
-
-**Free high quality images :**
-
-- https://www.pexels.com/
-- https://unsplash.com
-
-**Free sounds website:**
-
-- https://mixkit.co/
-
-**Free stock videos:**
-
-- https://pixabay.com/videos/
-
-**Free Fonts:**
-
-- https://fonts.google.com
-
-**Free Icons**
-
-- https://fonts.google.com/icons
-- https://icons.getbootstrap.com/
-
-**CSS Library:**
-
-- https://getbootstrap.com/
-- https://get.foundation/index.html
-
-**CSS Animation libraries:**
-
-- https://animate.style
-- https://www.minimamente.com/project/magic/
+📁 `UML FILE/UML_PolicyManagement_Clean.jpg or pdf`
+C:\Users\HP\Documents\unit2\UNIT-PROJECT-2\PolicyManagement\UML FILE
 
 
 
- 
+
+---
+
+## 🖼️ Wireframes
+
+You can find the wire frame inside the project folder:
+📁 `WIRE FRAME FILE/wireframe.pdf`
+
+C:\Users\HP\Documents\unit2\UNIT-PROJECT-2\PolicyManagement\WIRE FRAME FILE
+
+
+---
+
+📣 For any questions or suggestions, feel free to open an issue or contact the project maintainer.
+
+&copy; 2025 Policy Management System — Created by Eman Rajhi 💡
