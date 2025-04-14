@@ -37,7 +37,7 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'  # ✅ تأكد من تحويل ا�
 
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["https://unit-project-2-production-65b0.up.railway.app", "http:127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["https://unit-project-2-production-65b0.up.railway.app", "http://127.0.0.1"]
 
 
 # Application definition
