@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'your_default_secret_key')
 #///
 DEBUG = os.getenv('DEBUG', 'True') == 'True'  # ✅ تأكد من تحويل النص إلى `Boolean`
 
-
+#jjj
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ["https://unit-project-2-production-65b0.up.railway.app", "http://127.0.0.1"]
 
